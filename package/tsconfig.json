@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "target": "ES2015",
+    "moduleResolution": "Node10",
+    "module": "ESNext",
+    "declaration": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "outDir": "temp",
+    "removeComments": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "src/front"]
+}

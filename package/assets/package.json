@@ -1,0 +1,30 @@
+{
+  "name": "memview",
+  "description": "A web interface for Node.js that allows quick debugging and visualization of arrays.",
+  "license": "MIT",
+  "private": true,
+  "version": "0.1.0",
+  "main": "index.cjs.js",
+  "module": "index.esm.js",
+  "types": "back/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "",
+  "keywords": [
+    "nodejs",
+    "arrays",
+    "interface",
+    "2d",
+    "map",
+    "debug",
+    "breakpoint"
+  ],
+  "dependencies": {
+    "eventemitter3": "^5.0.1",
+    "express": "^4.21.0",
+    "open": "^10.1.0",
+    "socket.io": "^4.8.0"
+  }
+}

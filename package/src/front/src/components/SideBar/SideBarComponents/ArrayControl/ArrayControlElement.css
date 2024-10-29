@@ -1,0 +1,66 @@
+/*
+@keyframes fadeBorder {
+  0% {
+    border-color: rgba(
+      0,
+      128,
+      255,
+      1
+    );  
+  }
+  100% {
+    border-color: rgba(
+      0,
+      128,
+      255,
+      0
+    );  
+  }
+}
+
+ 
+.fade-out-border {
+  border: 2px solid rgba(0, 128, 255, 1); 
+  animation: fadeBorder 1s ease-out forwards;
+}
+*/
+
+.border-box {
+  border: 4px solid transparent;
+}
+
+/* Animation pour faire fade-out la bordure */
+@keyframes fadeBorder {
+  0% {
+    border-color: rgba(0, 128, 255, 1); /* Couleur initiale */
+  }
+  100% {
+    border-color: rgba(0, 128, 255, 0); /* Couleur finale (transparente) */
+  }
+}
+
+.no-border {
+  border: 4px solid transparent; /* Couleur initiale */
+}
+
+.fade-out-border {
+  border: 4px solid rgba(0, 128, 255, 1); /* Couleur initiale */
+  animation: fadeBorder 1s ease-out forwards; /* Animation de 2s */
+}
+
+.fade-out-border-breakpoint {
+  border: 4px solid orange; /* Couleur initiale */
+  animation: borderColorAnimation 1s infinite;
+}
+
+@keyframes borderColorAnimation {
+  0% {
+    border-color: orange;
+  }
+  50% {
+    border-color: rgba(255, 166, 0, 0.1); /* Orange transparent */
+  }
+  100% {
+    border-color: orange;
+  }
+}

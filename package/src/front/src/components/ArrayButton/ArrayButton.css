@@ -1,0 +1,83 @@
+/* Style de base (état normal) */
+.array-button {
+  background-color: #595959; /* Bleu par défaut */
+  color: white;
+  border: none;
+  /* border-radius: 5px; */
+  width: 100%;
+  height: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease; /* Transition pour les effets */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+/* État "hover" - lorsque la souris est au-dessus du bouton */
+.array-button:hover {
+  background-color: #1970cd; /* Une nuance plus sombre de bleu */
+}
+
+/* État "active" - lorsque le bouton est cliqué */
+.array-button:active {
+  background-color: #104781; /* Encore plus sombre lors du clic */
+  transform: scale(0.98); /* Léger effet de réduction lors du clic */
+}
+
+/* État "focus" - lorsque le bouton est sélectionné (par exemple via le clavier) */
+.array-button:focus {
+  outline: none; /* Supprimer le contour par défaut */
+}
+
+/* État "disabled" - lorsque le bouton est désactivé */
+.array-button:disabled {
+  background-color: #cccccc;
+  color: #404040;
+  cursor: default;
+}
+
+.array-button:disabled svg {
+  filter: brightness(0.5);
+}
+
+.border-box {
+  border: 2px solid transparent;
+}
+
+/* Animation pour faire fade-out la bordure */
+@keyframes fadeBorder {
+  0% {
+    border-color: rgba(0, 128, 255, 1); /* Couleur initiale */
+  }
+  100% {
+    border-color: rgba(0, 128, 255, 0); /* Couleur finale (transparente) */
+  }
+}
+
+.button-no-border {
+  border: 2px solid transparent; /* Couleur initiale */
+}
+
+.button-fade-out-border {
+  border: 2px solid rgba(0, 128, 255, 1); /* Couleur initiale */
+  animation: fadeBorder 1s ease-out forwards; /* Animation de 2s */
+}
+
+.button-fade-out-border-breakpoint {
+  border: 2px solid orange; /* Couleur initiale */
+  animation: borderColorAnimation 1s infinite;
+}
+
+@keyframes borderColorAnimation {
+  0% {
+    border-color: orange;
+  }
+  50% {
+    border-color: rgba(255, 166, 0, 0.1); /* Orange transparent */
+  }
+  100% {
+    border-color: orange;
+  }
+}
