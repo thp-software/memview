@@ -29,7 +29,7 @@ export class MemViewArray2d extends MemViewArrayFront {
   public getData(position: Vector2): any | undefined {
     if (position.y >= 0 && position.y < this.data.length) {
       if (position.x >= 0 && position.x < this.data[position.y].length) {
-        return this.data[position.x][position.y];
+        return this.data[position.y][position.x];
       }
     }
     return undefined;
