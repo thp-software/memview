@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/logo_test.png#center">
+  <img src="https://raw.githubusercontent.com/thp-software/memview/refs/heads/master/assets/logo_test.png#center">
 </p>
 
 <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="License">
