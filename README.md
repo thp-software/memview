@@ -12,9 +12,13 @@
 
 > MemView is a web interface for Node.JS that allows quick debugging and visualization of arrays.
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/thp-software/memview/refs/heads/master/assets/diagram.svg#center">
+</p>
+
 ## Installation
 
-`npm i memview --save-dev`
+`npm i memview`
 
 ## Simple Example
 
