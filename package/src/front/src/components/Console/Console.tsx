@@ -51,7 +51,6 @@ const Console: FC<ConsoleProps> = (props) => {
   const onLogs = (data: any[]) => {
     data.forEach((line) => {
       if (line.breakpoint) {
-        console.log(line.breakpoint);
         setIsOnBreakpoint(true);
       }
     });

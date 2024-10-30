@@ -25,6 +25,8 @@ import { MemViewOptions } from "../../shared/interfaces/MemViewOptions";
 import { MemViewArrayLogOptions } from "../../shared/interfaces/MemViewArrayLogOptions";
 import { MemViewLogOptions } from "../../shared/interfaces/MemViewLogOptions";
 import { mergeBaseMemViewLogOptions } from "../../shared/data/BaseMemViewLogOptions";
+import { KeyCode } from "../../shared/enums/KeyCode";
+import { KeyEvent } from "../../shared/interfaces/KeyEvent";
 
 export default class MemView {
   /**
@@ -57,6 +59,13 @@ export default class MemView {
    */
   private atlas: Atlas | null = null;
 
+  /**
+   * Store Keyboard keys state
+   */
+  private pressedKeys: Map<KeyCode, boolean> = new Map<KeyCode, boolean>();
+
+  private keyEventCallback: ((data: KeyEvent) => void) | undefined = undefined;
+
   constructor() {
     this.options = {
       port: 9000,
@@ -78,6 +87,10 @@ export default class MemView {
     return new Promise((resolve) => {
       if (options) {
         this.options = { ...this.options, ...options };
+      }
+
+      for (const key of Object.values(KeyCode)) {
+        this.pressedKeys.set(key as KeyCode, false);
       }
 
       const app = express();
@@ -193,6 +206,13 @@ export default class MemView {
 
           socket.on("resume_breakpoint_log", () => {
             this.logBreakpoint = false;
+          });
+
+          socket.on("keyboard_event", (data: any) => {
+            this.pressedKeys.set(data.key, data.isPressed);
+            if (this.keyEventCallback) {
+              this.keyEventCallback(data);
+            }
           });
           resolve();
         });
@@ -340,6 +360,26 @@ export default class MemView {
     return this.logMessage(value, LogLevel.error, options);
   }
 
+  /**
+   * Get the state of a key
+   * @param {KeyCode} - Key code to look at
+   * @returns {boolean} Key state
+   */
+  public getKey(code: KeyCode): boolean {
+    if (this.pressedKeys.has(code)) {
+      return this.pressedKeys.get(code)!;
+    }
+    return false;
+  }
+
+  /**
+   * Assign a callback to key event
+   * @param {(event: KeyEvent) => void} - Callback
+   */
+  public bindKeyEvent(callback: (event: KeyEvent) => void) {
+    this.keyEventCallback = callback;
+  }
+
   private async logMessage(
     value: string,
     level: LogLevel,
@@ -349,7 +389,10 @@ export default class MemView {
       const finalOptions = mergeBaseMemViewLogOptions(options);
 
       const log: LogData = {
-        value,
+        value:
+          typeof value === "object" && value !== null && !Array.isArray(value)
+            ? JSON.stringify(value)
+            : value,
         level,
         timestamp: Date.now(),
         breakpoint: finalOptions.isBreakpoint,

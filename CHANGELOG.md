@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2024-10-30
+
+### Added
+
+- Keyboard: Handling of Keyboard events on interface.
+- Keyboard: `getKey()` to get the state of a key (boolean).
+- Keyboard: `bindKeyEvent()` to bind a callback on key event.
+- Keyboard: Enum `KeyCode` that list all keys.
+- Keyboard: Interface `KeyEvent` that is used for `bindKeyEvent()`.
+
 ## [0.1.3] - 2024-10-29
 
 ### Chore

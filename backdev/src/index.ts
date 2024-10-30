@@ -4,6 +4,8 @@ import {
   MemViewMapperOutput,
   Vector2,
   Anchor,
+  KeyCode,
+  KeyEvent,
 } from "memview";
 
 (async () => {
@@ -49,15 +51,20 @@ import {
   // Define how to handle mouse events
   const customOutput: MemViewMapperOutput = {
     onHover: (position: Vector2) => {
-      mem.log(`Position ${position.x}/${position.y} -> Mouse Hovering`);
+      mem.log(`Mouse: ${position.x}/${position.y} -> Mouse Hovering`);
     },
     onMouseDown: (position: Vector2) => {
-      mem.log(`Position ${position.x}/${position.y} -> Mouse Down`);
+      mem.log(`Mouse: ${position.x}/${position.y} -> Mouse Down`);
     },
     onMouseUp: (position: Vector2) => {
-      mem.log(`Position ${position.x}/${position.y} -> Mouse Up`);
+      mem.log(`Mouse: ${position.x}/${position.y} -> Mouse Up`);
     },
   };
+
+  // You can listen to keyboard event
+  mem.bindKeyEvent((data: KeyEvent) => {
+    // mem.log(`Keyboard: ${data.key} -> ${data.isPressed}`);
+  });
 
   const myArray: number[][] = [];
   const size: Vector2 = { x: 16, y: 16 };
@@ -77,6 +84,11 @@ import {
         myArray[iY][iX] = Math.random();
       }
     }
+
+    // Another way to get keyboard events.
+    // KeyCode is bind on the physical position of the key.
+    // That's mean that "KeyQ" is "Q" on QWERTY layout but "A" on AZERTY layout.
+    mem.log("Q (QWERTY) / A (AZERTY) " + mem.getKey(KeyCode.KeyQ));
 
     await mem.log2d(
       // Array unique id

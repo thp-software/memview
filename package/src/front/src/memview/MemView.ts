@@ -10,6 +10,7 @@ import { decodeMapper } from "../../../shared/Utils/mapper";
 import { ArrayUpdate } from "../../../shared/interfaces/ArrayUpdate";
 import { MemViewArrayFront } from "./arrays/MemViewArray";
 import { MemViewMapper } from "../../../shared/interfaces/MemViewMapper";
+import { KeyCode } from "../../../shared/enums/KeyCode";
 
 export class MemView {
   private container: HTMLDivElement;
@@ -52,6 +53,8 @@ export class MemView {
   public get showSideBar(): boolean {
     return this._showSideBar;
   }
+
+  pressedKeys: Map<KeyCode, boolean> = new Map<KeyCode, boolean>();
 
   public constructor(container: HTMLDivElement, location: Location) {
     this.container = container;
@@ -281,6 +284,28 @@ export class MemView {
         });
 
         window.addEventListener("resize", this.onResize.bind(this));
+
+        for (const key of Object.values(KeyCode)) {
+          this.pressedKeys.set(key as KeyCode, false);
+        }
+
+        window.addEventListener("keydown", (event: KeyboardEvent) => {
+          if (this.pressedKeys.get(event.code as KeyCode) == false) {
+            this.socket?.emit("keyboard_event", {
+              key: event.code as KeyCode,
+              isPressed: true,
+            });
+          }
+          this.pressedKeys.set(event.code as KeyCode, true);
+        });
+
+        window.addEventListener("keyup", (event: KeyboardEvent) => {
+          this.socket?.emit("keyboard_event", {
+            key: event.code as KeyCode,
+            isPressed: false,
+          });
+          this.pressedKeys.set(event.code as KeyCode, false);
+        });
       }
     }
 
