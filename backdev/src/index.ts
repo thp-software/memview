@@ -6,6 +6,7 @@ import {
   Anchor,
   KeyCode,
   KeyEvent,
+  Zoom,
 } from "memview";
 
 (async () => {
@@ -20,6 +21,12 @@ import {
     openNewTab: true,
     // No auto order
     autoOrder: "None",
+    renderOptions: {
+      bitmapViewThreshold: Zoom.Divide4,
+      gridDisplayThreshold: Zoom.Divide2,
+      textureDisplayThreshold: Zoom.Divide2,
+      textDisplayThreshold: Zoom.Base,
+    },
   });
 
   // Define how to render each cell of the array
@@ -90,7 +97,7 @@ import {
 
   const myArray: number[][] = [];
   const myArrayTop: number[][] = [];
-  const size: Vector2 = { x: 16, y: 16 };
+  const size: Vector2 = { x: 32, y: 32 };
 
   // Init Array
   for (let iY = 0; iY < size.y; iY++) {
