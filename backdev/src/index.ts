@@ -18,6 +18,8 @@ import {
     waitForTab: true,
     // Automatically open interface at start
     openNewTab: true,
+    // No auto order
+    autoOrder: "None",
   });
 
   // Define how to render each cell of the array
@@ -36,6 +38,26 @@ import {
           fontSize: 14,
         },
       ];
+    },
+    cellAtlasIndex: (el: any) => {
+      // If you want to map a texture from an Atlas to your cell.
+      // Not used here.
+      return { x: 0, y: 0 };
+    },
+    details: (el: any) => {
+      // Show the value of the hovered cell in the sidebar.
+      return [`Value: ${el.toFixed(2)}`];
+    },
+  };
+
+  const customMapperTop: MemViewMapper = {
+    cellBackgroundColor: (el: any) => {
+      // If the value of cell is > 0.9, cell background will be red, else it will be green.
+      return el > 0.9 ? "#a0505050" : "#0000";
+    },
+    cellText: (el: any) => {
+      // Show the value of the cell at the center of itself.
+      return [];
     },
     cellAtlasIndex: (el: any) => {
       // If you want to map a texture from an Atlas to your cell.
@@ -67,13 +89,16 @@ import {
   });
 
   const myArray: number[][] = [];
+  const myArrayTop: number[][] = [];
   const size: Vector2 = { x: 16, y: 16 };
 
   // Init Array
   for (let iY = 0; iY < size.y; iY++) {
     myArray.push([]);
+    myArrayTop.push([]);
     for (let iX = 0; iX < size.x; iX++) {
       myArray[iY].push(Math.random());
+      myArrayTop[iY].push(Math.random());
     }
   }
 
@@ -82,6 +107,7 @@ import {
     for (let iY = 0; iY < size.y; iY++) {
       for (let iX = 0; iX < size.x; iX++) {
         myArray[iY][iX] = Math.random();
+        myArrayTop[iY][iX] = Math.random();
       }
     }
 
@@ -98,11 +124,29 @@ import {
       // Options
       {
         // Wait for 1000ms before continuing.
-        waitFor: 1000,
+        waitFor: 0,
         // Wait for the array to be rendered before continuing.
         isSync: true,
         mapper: customMapper,
         output: customOutput,
+        position: { x: 0, y: 0 },
+      }
+    );
+
+    await mem.log2d(
+      // Array unique id
+      "my_array_id_2",
+      // Array reference
+      myArrayTop,
+      // Options
+      {
+        // Wait for 1000ms before continuing.
+        waitFor: 33,
+        // Wait for the array to be rendered before continuing.
+        isSync: true,
+        mapper: customMapperTop,
+        output: customOutput,
+        position: { x: 0, y: 0 },
       }
     );
   }

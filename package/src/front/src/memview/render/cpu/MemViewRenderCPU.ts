@@ -321,13 +321,13 @@ export class MemViewRenderCPU implements MemViewRender {
           for (let x = 0; x < maxSize.x; x++) {
             const index = (y * maxSize.x + x) * 4;
 
-            const hexColor = this.hexToRgb(
+            const hexColor = this.hexToRgba(
               mapper.cellBackgroundColor(data[y][x])
             );
-            data2[index] = hexColor.r; // R
-            data2[index + 1] = hexColor.g; // G
-            data2[index + 2] = hexColor.b; // B
-            data2[index + 3] = 255; // A (255 = opaque)
+            data2[index] = hexColor.r;
+            data2[index + 1] = hexColor.g;
+            data2[index + 2] = hexColor.b;
+            data2[index + 3] = hexColor.a;
           }
         }
 
@@ -351,19 +351,24 @@ export class MemViewRenderCPU implements MemViewRender {
     }
   }
 
-  public hexToRgb(hex: string) {
-    // Vérifier si le format est court (ex: #abc) ou long (ex: #aabbcc)
+  public hexToRgba(hex: string) {
     let normalizedHex =
       hex.length === 4
         ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`
+        : hex.length === 5
+        ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}${hex[4]}${hex[4]}`
         : hex;
 
     const bigint = parseInt(normalizedHex.slice(1), 16);
 
     return {
-      r: (bigint >> 16) & 255, // Extraire le rouge
-      g: (bigint >> 8) & 255, // Extraire le vert
-      b: bigint & 255, // Extraire le bleu
+      r: (bigint >> (normalizedHex.length === 9 ? 24 : 16)) & 255,
+      g: (bigint >> (normalizedHex.length === 9 ? 16 : 8)) & 255,
+      b: (bigint >> (normalizedHex.length === 9 ? 8 : 0)) & 255,
+      a:
+        normalizedHex.length === 9 || normalizedHex.length === 5
+          ? bigint & 255
+          : 255,
     };
   }
 
@@ -452,13 +457,13 @@ export class MemViewRenderCPU implements MemViewRender {
           for (let x = 0; x < size.x; x++) {
             const index = (y * size.x + x) * 4;
 
-            const hexColor = this.hexToRgb(
+            const hexColor = this.hexToRgba(
               mapper.cellBackgroundColor(data[x + size.x * y])
             );
-            data2[index] = hexColor.r; // R
-            data2[index + 1] = hexColor.g; // G
-            data2[index + 2] = hexColor.b; // B
-            data2[index + 3] = 255; // A (255 = opaque)
+            data2[index] = hexColor.r;
+            data2[index + 1] = hexColor.g;
+            data2[index + 2] = hexColor.b;
+            data2[index + 3] = hexColor.a;
           }
         }
 
