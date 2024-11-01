@@ -1,3 +1,5 @@
+import { MemViewRenderOptions } from "./MemViewRenderOptions";
+
 export interface MemViewOptions {
   /**
    * Port of the interface : http://localhost:[PORT]
@@ -24,4 +26,6 @@ export interface MemViewOptions {
    * Set "None" if you want to position them yourself
    */
   autoOrder: "None" | "Row" | "Column" | "Wrap";
+
+  renderOptions: MemViewRenderOptions;
 }

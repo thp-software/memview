@@ -3,6 +3,7 @@ import { MemViewArrayType } from "../../../../shared/enums/ArrayType";
 import { MemViewRender } from "../render/MemViewRender";
 import { MemViewArray } from "../../../../shared/arrays/MemViewArray";
 import { MemViewMapper } from "../../../../shared/interfaces/MemViewMapper";
+import { MemViewRenderOptions } from "../../../../shared/interfaces/MemViewRenderOptions";
 
 export abstract class MemViewArrayFront extends MemViewArray {
   protected _lastRenderTime: number;
@@ -53,6 +54,7 @@ export abstract class MemViewArrayFront extends MemViewArray {
   public abstract getSize(): Vector2;
   public abstract updateRender(
     memViewRender: MemViewRender,
+    renderOptions: MemViewRenderOptions,
     offset: Vector2,
     zoomFactor: number
   ): void;

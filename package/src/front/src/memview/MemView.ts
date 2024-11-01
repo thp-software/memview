@@ -11,6 +11,7 @@ import { ArrayUpdate } from "../../../shared/interfaces/ArrayUpdate";
 import { MemViewArrayFront } from "./arrays/MemViewArray";
 import { MemViewMapper } from "../../../shared/interfaces/MemViewMapper";
 import { KeyCode } from "../../../shared/enums/KeyCode";
+import { zooms } from "../../../shared/enums/Zoom";
 
 export class MemView {
   private container: HTMLDivElement;
@@ -30,9 +31,7 @@ export class MemView {
   private hoveredArray: MemViewArrayFront | null = null;
   private hoveredArrayCell: Vector2 = { x: 0, y: 0 };
 
-  private zooms: number[] = [
-    0.015625, 0.03125, 0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 8,
-  ];
+  private zooms: number[] = zooms;
 
   private zoomIndex: number = 6;
 
@@ -330,6 +329,7 @@ export class MemView {
         const start: number = performance.now();
         this.arrays[i].updateRender(
           this.memViewRender,
+          this._options.renderOptions,
           this.offset,
           this.zooms[this.zoomIndex]
         );

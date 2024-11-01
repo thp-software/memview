@@ -3,6 +3,7 @@ import { Vector2 } from "../../../../shared/interfaces/Vector2";
 import { MemViewRender } from "../render/MemViewRender";
 import { MemViewArrayFront } from "./MemViewArray";
 import { MemViewMapper } from "../../../../shared/interfaces/MemViewMapper";
+import { MemViewRenderOptions } from "../../../../shared/interfaces/MemViewRenderOptions";
 
 export class MemViewArray2dFlat extends MemViewArrayFront {
   private data: any[] = [];
@@ -15,6 +16,7 @@ export class MemViewArray2dFlat extends MemViewArrayFront {
 
   public updateRender(
     memViewRender: MemViewRender,
+    renderOptions: MemViewRenderOptions,
     offset: Vector2,
     zoomFactor: number
   ) {
@@ -25,7 +27,8 @@ export class MemViewArray2dFlat extends MemViewArrayFront {
       zoomFactor,
       this.data,
       this.mapper,
-      this.isBreakpoint
+      this.isBreakpoint,
+      renderOptions
     );
   }
 

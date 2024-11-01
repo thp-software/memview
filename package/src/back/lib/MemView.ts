@@ -27,6 +27,7 @@ import { MemViewLogOptions } from "../../shared/interfaces/MemViewLogOptions";
 import { mergeBaseMemViewLogOptions } from "../../shared/data/BaseMemViewLogOptions";
 import { KeyCode } from "../../shared/enums/KeyCode";
 import { KeyEvent } from "../../shared/interfaces/KeyEvent";
+import { Zoom } from "../../shared/enums/Zoom";
 
 export default class MemView {
   /**
@@ -74,6 +75,12 @@ export default class MemView {
       showSideBar: true,
       targetRender: "CPU",
       autoOrder: "Wrap",
+      renderOptions: {
+        bitmapViewThreshold: Zoom.Divide2,
+        gridDisplayThreshold: Zoom.Base,
+        textureDisplayThreshold: Zoom.Base,
+        textDisplayThreshold: Zoom.Base,
+      },
     };
   }
 
@@ -86,7 +93,14 @@ export default class MemView {
   public async start(options?: DeepPartial<MemViewOptions>): Promise<void> {
     return new Promise((resolve) => {
       if (options) {
-        this.options = { ...this.options, ...options };
+        this.options = {
+          ...this.options,
+          ...options,
+          renderOptions: {
+            ...this.options.renderOptions,
+            ...options.renderOptions,
+          },
+        };
       }
 
       for (const key of Object.values(KeyCode)) {

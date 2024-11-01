@@ -5,6 +5,8 @@ import { MemViewDraw } from "./MemViewDraw";
 import { MemViewRender } from "../MemViewRender";
 import { Atlas } from "../../../../../shared/interfaces/Atlas";
 import { MemViewMapper } from "../../../../../shared/interfaces/MemViewMapper";
+import { MemViewRenderOptions } from "../../../../../shared/interfaces/MemViewRenderOptions";
+import { zooms } from "../../../../../shared/enums/Zoom";
 
 export class MemViewRenderCPU implements MemViewRender {
   // private canvas: HTMLCanvasElement | null = null;
@@ -167,7 +169,8 @@ export class MemViewRenderCPU implements MemViewRender {
     zoomFactor: number,
     data: any[],
     mapper: MemViewMapper,
-    isBreakpoint: boolean
+    isBreakpoint: boolean,
+    renderOptions: MemViewRenderOptions
   ): void {
     if (
       this.backgroundCanvas &&
@@ -225,19 +228,21 @@ export class MemViewRenderCPU implements MemViewRender {
             cellAtlasIndex: mapper.cellAtlasIndex(data[iX]),
             cellText: mapper.cellText(data[iX]),
             details: mapper.details(data[iX]),
-          }
+          },
+          renderOptions
         );
       }
     }
   }
 
   public draw2dArray(
-    id: string,
+    _id: string,
     position: Vector2,
     zoomFactor: number,
     data: any[],
     mapper: MemViewMapper,
-    isBreakpoint: boolean
+    _isBreakpoint: boolean,
+    renderOptions: MemViewRenderOptions
   ): void {
     if (
       this.backgroundCanvas &&
@@ -256,60 +261,26 @@ export class MemViewRenderCPU implements MemViewRender {
         }
       }
 
-      MemViewDraw.drawArrayContour(
-        this.backgroundCanvasContext,
-        position,
-        maxSize,
-        zoomFactor,
-        isBreakpoint ? "red" : "black",
-        isBreakpoint ? 5 : 1,
-        isBreakpoint ? "red" : "#00000010"
-      );
+      // MemViewDraw.drawArrayContour(
+      //   this.backgroundCanvasContext,
+      //   position,
+      //   maxSize,
+      //   zoomFactor,
+      //   isBreakpoint ? "red" : "black",
+      //   isBreakpoint ? 5 : 1,
+      //   isBreakpoint ? "red" : "#00000010"
+      // );
 
-      MemViewDraw.drawArrayInfos(
-        this.backgroundCanvasContext,
-        MemViewArrayType.Array2d,
-        id,
-        position,
-        maxSize,
-        zoomFactor
-      );
+      // MemViewDraw.drawArrayInfos(
+      //   this.backgroundCanvasContext,
+      //   MemViewArrayType.Array2d,
+      //   id,
+      //   position,
+      //   maxSize,
+      //   zoomFactor
+      // );
 
-      if (zoomFactor >= 1) {
-        for (let iY = 0; iY < data.length; iY++) {
-          for (let iX = 0; iX < data[iY].length; iX++) {
-            if (
-              (position.x + iX * 64) * zoomFactor < -64 * zoomFactor ||
-              (position.x + iX * 64) * zoomFactor >=
-                (zoomFactor >= 1
-                  ? this.backgroundCanvas.width
-                  : this.backgroundCanvas.width / zoomFactor) ||
-              (position.y + iY * 64) * zoomFactor < -64 * zoomFactor ||
-              (position.y + iY * 64) * zoomFactor >=
-                (zoomFactor >= 1
-                  ? this.backgroundCanvas.height
-                  : this.backgroundCanvas.height / zoomFactor)
-            ) {
-              continue;
-            }
-
-            MemViewDraw.drawElement(
-              this.arrayCellInfosCanvasContext,
-              this.atlasImage,
-              this.atlas?.textureSize,
-              // { x: iX, y: iY },
-              { x: position.x + iX * 64, y: position.y + iY * 64 },
-              zoomFactor,
-              {
-                cellBackgroundColor: mapper.cellBackgroundColor(data[iY][iX]),
-                cellAtlasIndex: mapper.cellAtlasIndex(data[iY][iX]),
-                cellText: mapper.cellText(data[iY][iX]),
-                details: mapper.details(data[iY][iX]),
-              }
-            );
-          }
-        }
-      } else {
+      if (zoomFactor <= zooms[renderOptions.bitmapViewThreshold]) {
         this.offscreenCanvasContext.clearRect(0, 0, maxSize.x, maxSize.y);
         const imageData = this.offscreenCanvasContext.createImageData(
           maxSize.x,
@@ -347,6 +318,41 @@ export class MemViewRenderCPU implements MemViewRender {
           maxSize.x * 64 * zoomFactor,
           maxSize.y * 64 * zoomFactor
         );
+      } else {
+        for (let iY = 0; iY < data.length; iY++) {
+          for (let iX = 0; iX < data[iY].length; iX++) {
+            if (
+              (position.x + iX * 64) * zoomFactor < -64 * zoomFactor ||
+              (position.x + iX * 64) * zoomFactor >=
+                (zoomFactor >= 1
+                  ? this.backgroundCanvas.width
+                  : this.backgroundCanvas.width / zoomFactor) ||
+              (position.y + iY * 64) * zoomFactor < -64 * zoomFactor ||
+              (position.y + iY * 64) * zoomFactor >=
+                (zoomFactor >= 1
+                  ? this.backgroundCanvas.height
+                  : this.backgroundCanvas.height / zoomFactor)
+            ) {
+              continue;
+            }
+
+            MemViewDraw.drawElement(
+              this.arrayCellInfosCanvasContext,
+              this.atlasImage,
+              this.atlas?.textureSize,
+              // { x: iX, y: iY },
+              { x: position.x + iX * 64, y: position.y + iY * 64 },
+              zoomFactor,
+              {
+                cellBackgroundColor: mapper.cellBackgroundColor(data[iY][iX]),
+                cellAtlasIndex: mapper.cellAtlasIndex(data[iY][iX]),
+                cellText: mapper.cellText(data[iY][iX]),
+                details: mapper.details(data[iY][iX]),
+              },
+              renderOptions
+            );
+          }
+        }
       }
     }
   }
@@ -373,13 +379,14 @@ export class MemViewRenderCPU implements MemViewRender {
   }
 
   public draw2dFlatArray(
-    id: string,
+    _id: string,
     position: Vector2,
     size: Vector2,
     zoomFactor: number,
     data: any[],
     mapper: MemViewMapper,
-    isBreakpoint: boolean
+    _isBreakpoint: boolean,
+    renderOptions: MemViewRenderOptions
   ): void {
     if (
       this.backgroundCanvas &&
@@ -390,62 +397,26 @@ export class MemViewRenderCPU implements MemViewRender {
       this.offscreenCanvas &&
       this.offscreenCanvasContext
     ) {
-      MemViewDraw.drawArrayContour(
-        this.backgroundCanvasContext,
-        position,
-        size,
-        zoomFactor,
-        isBreakpoint ? "red" : "black",
-        isBreakpoint ? 5 : 1,
-        isBreakpoint ? "#ff000010" : "#00000010"
-      );
+      // MemViewDraw.drawArrayContour(
+      //   this.backgroundCanvasContext,
+      //   position,
+      //   size,
+      //   zoomFactor,
+      //   isBreakpoint ? "red" : "black",
+      //   isBreakpoint ? 5 : 1,
+      //   isBreakpoint ? "#ff000010" : "#00000010"
+      // );
 
-      MemViewDraw.drawArrayInfos(
-        this.backgroundCanvasContext,
-        MemViewArrayType.Array2dFlat,
-        id,
-        position,
-        size,
-        zoomFactor
-      );
+      // MemViewDraw.drawArrayInfos(
+      //   this.backgroundCanvasContext,
+      //   MemViewArrayType.Array2dFlat,
+      //   id,
+      //   position,
+      //   size,
+      //   zoomFactor
+      // );
 
-      if (zoomFactor >= 1) {
-        for (let iY = 0; iY < size.y; iY++) {
-          for (let iX = 0; iX < size.x; iX++) {
-            if (
-              (position.x + iX * 64) * zoomFactor < -64 * zoomFactor ||
-              (position.x + iX * 64) * zoomFactor >=
-                (zoomFactor >= 1
-                  ? this.backgroundCanvas.width
-                  : this.backgroundCanvas.width / zoomFactor) ||
-              (position.y + iY * 64) * zoomFactor < -64 * zoomFactor ||
-              (position.y + iY * 64) * zoomFactor >=
-                (zoomFactor >= 1
-                  ? this.backgroundCanvas.height
-                  : this.backgroundCanvas.height / zoomFactor)
-            ) {
-              continue;
-            }
-
-            MemViewDraw.drawElement(
-              this.arrayCellInfosCanvasContext,
-              this.atlasImage,
-              this.atlas?.textureSize,
-              // { x: iX, y: i Y },
-              { x: position.x + iX * 64, y: position.y + iY * 64 },
-              zoomFactor,
-              {
-                cellBackgroundColor: mapper.cellBackgroundColor(
-                  data[iX + size.x * iY]
-                ),
-                cellAtlasIndex: mapper.cellAtlasIndex(data[iX + size.x * iY]),
-                cellText: mapper.cellText(data[iX + size.x * iY]),
-                details: mapper.details(data[iX + size.x * iY]),
-              }
-            );
-          }
-        }
-      } else {
+      if (zoomFactor <= zooms[renderOptions.bitmapViewThreshold]) {
         this.offscreenCanvasContext.clearRect(0, 0, size.x, size.y);
         const imageData = this.offscreenCanvasContext.createImageData(
           size.x,
@@ -483,6 +454,43 @@ export class MemViewRenderCPU implements MemViewRender {
           size.x * 64 * zoomFactor,
           size.y * 64 * zoomFactor
         );
+      } else {
+        for (let iY = 0; iY < size.y; iY++) {
+          for (let iX = 0; iX < size.x; iX++) {
+            if (
+              (position.x + iX * 64) * zoomFactor < -64 * zoomFactor ||
+              (position.x + iX * 64) * zoomFactor >=
+                (zoomFactor >= 1
+                  ? this.backgroundCanvas.width
+                  : this.backgroundCanvas.width / zoomFactor) ||
+              (position.y + iY * 64) * zoomFactor < -64 * zoomFactor ||
+              (position.y + iY * 64) * zoomFactor >=
+                (zoomFactor >= 1
+                  ? this.backgroundCanvas.height
+                  : this.backgroundCanvas.height / zoomFactor)
+            ) {
+              continue;
+            }
+
+            MemViewDraw.drawElement(
+              this.arrayCellInfosCanvasContext,
+              this.atlasImage,
+              this.atlas?.textureSize,
+              // { x: iX, y: i Y },
+              { x: position.x + iX * 64, y: position.y + iY * 64 },
+              zoomFactor,
+              {
+                cellBackgroundColor: mapper.cellBackgroundColor(
+                  data[iX + size.x * iY]
+                ),
+                cellAtlasIndex: mapper.cellAtlasIndex(data[iX + size.x * iY]),
+                cellText: mapper.cellText(data[iX + size.x * iY]),
+                details: mapper.details(data[iX + size.x * iY]),
+              },
+              renderOptions
+            );
+          }
+        }
       }
     }
   }

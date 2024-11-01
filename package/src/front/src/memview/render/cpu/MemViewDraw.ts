@@ -2,6 +2,8 @@ import { MemViewArrayType } from "../../../../../shared/enums/ArrayType";
 import { Vector2 } from "../../../../../shared/interfaces/Vector2";
 import { MemViewElement } from "../../../../../shared/interfaces/MemViewElement";
 import { Anchor } from "../../../../../shared/enums/Anchor";
+import { MemViewRenderOptions } from "../../../../../shared/interfaces/MemViewRenderOptions";
+import { zooms } from "../../../../../shared/enums/Zoom";
 
 export abstract class MemViewDraw {
   public static drawElement(
@@ -11,7 +13,8 @@ export abstract class MemViewDraw {
     // arrayPosition: Vector2,
     position: Vector2,
     zoomFactor: number,
-    element: MemViewElement
+    element: MemViewElement,
+    renderOptions: MemViewRenderOptions
   ) {
     context.fillStyle = element.cellBackgroundColor;
     context.strokeStyle = "black";
@@ -23,7 +26,8 @@ export abstract class MemViewDraw {
       Math.floor(64 * zoomFactor)
     );
 
-    if (zoomFactor >= 1.0) {
+    console.log(zoomFactor + "/" + zooms[renderOptions.gridDisplayThreshold]);
+    if (zoomFactor >= zooms[renderOptions.gridDisplayThreshold]) {
       context.strokeRect(
         Math.floor(position.x * zoomFactor),
         Math.floor(position.y * zoomFactor),
@@ -32,7 +36,7 @@ export abstract class MemViewDraw {
       );
     }
 
-    if (zoomFactor >= 0.25) {
+    if (zoomFactor >= zooms[renderOptions.textureDisplayThreshold]) {
       if (
         !(element.cellAtlasIndex.x === 0 && element.cellAtlasIndex.x === 0) &&
         atlasImage &&
@@ -52,7 +56,7 @@ export abstract class MemViewDraw {
       }
     }
 
-    if (zoomFactor >= 1) {
+    if (zoomFactor >= zooms[renderOptions.textDisplayThreshold]) {
       element.cellText.forEach((text) => {
         context.fillStyle = text.color;
 

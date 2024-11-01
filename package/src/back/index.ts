@@ -6,6 +6,7 @@ import { MemViewElement } from "../shared/interfaces/MemViewElement";
 import { KeyEvent } from "../shared/interfaces/KeyEvent";
 import { Anchor } from "../shared/enums/Anchor";
 import { KeyCode } from "../shared/enums/KeyCode";
+import { Zoom } from "../shared/enums/Zoom";
 
 export {
   MemView,
@@ -16,4 +17,5 @@ export {
   type KeyEvent,
   Anchor,
   KeyCode,
+  Zoom,
 };

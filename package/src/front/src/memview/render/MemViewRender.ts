@@ -1,5 +1,6 @@
 import { Atlas } from "../../../../shared/interfaces/Atlas";
 import { MemViewMapper } from "../../../../shared/interfaces/MemViewMapper";
+import { MemViewRenderOptions } from "../../../../shared/interfaces/MemViewRenderOptions";
 import { Vector2 } from "../../../../shared/interfaces/Vector2";
 import { MemViewArrayFront } from "../arrays/MemViewArray";
 
@@ -16,7 +17,8 @@ export interface MemViewRender {
     zoomFactor: number,
     data: any[],
     mapper: MemViewMapper,
-    isBreakpoint: boolean
+    isBreakpoint: boolean,
+    renderOptions: MemViewRenderOptions
   ): void;
 
   draw2dArray(
@@ -25,7 +27,8 @@ export interface MemViewRender {
     zoomFactor: number,
     data: any[],
     mapper: MemViewMapper,
-    isBreakpoint: boolean
+    isBreakpoint: boolean,
+    renderOptions: MemViewRenderOptions
   ): void;
 
   draw2dFlatArray(
@@ -35,7 +38,8 @@ export interface MemViewRender {
     zoomFactor: number,
     data: any[],
     mapper: MemViewMapper,
-    isBreakpoint: boolean
+    isBreakpoint: boolean,
+    renderOptions: MemViewRenderOptions
   ): void;
 
   drawArraysUI(): void;
