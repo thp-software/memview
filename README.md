@@ -2,15 +2,30 @@
   <img src="https://raw.githubusercontent.com/thp-software/memview/refs/heads/master/assets/logo_test.png#center">
 </p>
 
-<img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="License">
+<p align="center">
+<img src="https://img.shields.io/badge/Prototype-4CAF50?style=flat&logo=git&logoColor=white" alt="Prototype">
+<img src="https://img.shields.io/badge/Node.js-4CAF50?style=flat&logo=nodedotjs&logoColor=white" alt="Node.js">
+<img src="https://img.shields.io/badge/Socket.IO-4CAF50?style=flat&logo=socketdotio&logoColor=white" alt="Socket.IO">
+<img src="https://img.shields.io/badge/Localhost-4CAF50?style=flat&logo=server&logoColor=white" alt="Localhost"> 
+<img src="https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square" alt="MIT License">
+</p>
+
+<h2 align="center"><b><i>A Web Interface for Your Node.js App</i></b></h2>
 
 <h3 align="center">🚧 Prototype version — breaking changes may occur until 1.0.0. 🚧</h3>
 
-<h3 align="center"><i>Clean documentation coming later.</i></h3>
+<h3 align="center"><i>Clean documentation coming soon.</i></h3>
 
 ## What is MemView ?
 
-> MemView is a web interface for Node.JS that allows quick debugging and visualization of arrays.
+<h3><i>console.log() for arrays</i></h3>
+
+> MemView is a web interface for Node.js that enables quick debugging and visualization of arrays.
+
+- 👍 Plug & Play
+- 🛠️ Fully customizable
+- ⚡ Optimized for fast rendering
+- 💻 CPU-only, no hardware acceleration required
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/thp-software/memview/refs/heads/master/assets/diagram.svg#center">
@@ -18,13 +33,22 @@
 
 ### Output
 
-- 🔢 Log Arrays (1D, 2D and 2D Flat)
-- 💬 Log Messages in Console (Log, Warn and Error)
+You can display items on a draggable and zoomable map:
+
+- 🔢 Log arrays (1D, 2D, and flattened 2D) ✅
+- 💬 Log messages in the console (log, warn, and error) ✅
+- 🖼️ Log images (RGB, RGBA) <b><i>- Coming soon -</i></b>
+- 📟 Log displays <b><i>- Coming soon -</i></b>
+- 🌳 Log tree structures <b><i>- Potential future feature -</i></b>
+- 🔊 Log audio (music, spatialized sounds) <b><i>- Potential future feature -</i></b>
 
 ### Input
 
-- 🖱️ Mouse Events.
-- ⌨️ Keyboard Events.
+You can receive inputs:
+
+- 🖱️ Mouse events ✅
+- ⌨️ Keyboard events ✅
+- 🕹️ Gamepad events <b><i>- Potential future feature -</i></b>
 
 ## Installation
 
@@ -145,6 +169,16 @@ import {
   }
 })();
 ```
+
+## Code Quality
+
+#### Before 1.0.0
+
+Features first, even to the detriment of code quality.
+
+#### Since 1.0.0
+
+Quality first.
 
 ## Author
 
