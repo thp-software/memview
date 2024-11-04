@@ -7,28 +7,28 @@ import { zooms } from "../../../../../shared/enums/Zoom";
 
 export abstract class MemViewDraw {
   public static drawElement(
-    context: CanvasRenderingContext2D,
+    cellContext: CanvasRenderingContext2D,
+    atlasContext: CanvasRenderingContext2D,
+    infosContext: CanvasRenderingContext2D,
     atlasImage: any | null,
     atlasTextureSize: Vector2 | undefined,
-    // arrayPosition: Vector2,
     position: Vector2,
     zoomFactor: number,
     element: MemViewElement,
     renderOptions: MemViewRenderOptions
   ) {
-    context.fillStyle = element.cellBackgroundColor;
-    context.strokeStyle = "black";
-    context.lineWidth = 1;
-    context.fillRect(
+    cellContext.fillStyle = element.cellBackgroundColor;
+    cellContext.strokeStyle = "black";
+    cellContext.lineWidth = 1;
+    cellContext.fillRect(
       Math.floor(position.x * zoomFactor),
       Math.floor(position.y * zoomFactor),
       Math.floor(64 * zoomFactor),
       Math.floor(64 * zoomFactor)
     );
 
-    console.log(zoomFactor + "/" + zooms[renderOptions.gridDisplayThreshold]);
     if (zoomFactor >= zooms[renderOptions.gridDisplayThreshold]) {
-      context.strokeRect(
+      cellContext.strokeRect(
         Math.floor(position.x * zoomFactor),
         Math.floor(position.y * zoomFactor),
         Math.floor(64 * zoomFactor),
@@ -42,28 +42,30 @@ export abstract class MemViewDraw {
         atlasImage &&
         atlasTextureSize
       ) {
-        context.drawImage(
+        atlasContext.drawImage(
           atlasImage,
-          element.cellAtlasIndex.x * atlasTextureSize.x,
-          element.cellAtlasIndex.y * atlasTextureSize.y,
-          atlasTextureSize.x,
-          atlasTextureSize.y,
-          position.x * zoomFactor,
-          position.y * zoomFactor,
-          64 * zoomFactor,
-          64 * zoomFactor
+          Math.floor(element.cellAtlasIndex.x * atlasTextureSize.x),
+          Math.floor(element.cellAtlasIndex.y * atlasTextureSize.y),
+          Math.floor(atlasTextureSize.x),
+          Math.floor(atlasTextureSize.y),
+          Math.floor(position.x * zoomFactor),
+          Math.floor(position.y * zoomFactor),
+          Math.floor(64 * zoomFactor),
+          Math.floor(64 * zoomFactor)
         );
       }
     }
 
     if (zoomFactor >= zooms[renderOptions.textDisplayThreshold]) {
       element.cellText.forEach((text) => {
-        context.fillStyle = text.color;
+        infosContext.fillStyle = text.color;
 
-        context.textAlign = MemViewDraw.getTextAlignFromAnchor(text.anchor);
+        infosContext.textAlign = MemViewDraw.getTextAlignFromAnchor(
+          text.anchor
+        );
 
-        context.textBaseline = "middle";
-        context.font = `${text.fontSize * zoomFactor}px Consolas`;
+        infosContext.textBaseline = "middle";
+        infosContext.font = `${text.fontSize * zoomFactor}px Consolas`;
 
         const anchoredPosition: Vector2 = this.getPositionForAnchor(
           position,
@@ -71,7 +73,11 @@ export abstract class MemViewDraw {
           zoomFactor
         );
 
-        context.fillText(text.text, anchoredPosition.x, anchoredPosition.y);
+        infosContext.fillText(
+          text.text,
+          anchoredPosition.x,
+          anchoredPosition.y
+        );
       });
     }
 

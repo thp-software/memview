@@ -308,13 +308,13 @@ export class MemView {
       }
     }
 
-    document.addEventListener("visibilitychange", function () {
-      if (document.hidden) {
-        console.log("L'onglet est en arrière-plan");
-      } else {
-        console.log("L'onglet est actif");
-      }
-    });
+    // document.addEventListener("visibilitychange", function () {
+    //   if (document.hidden) {
+    //     console.log("L'onglet est en arrière-plan");
+    //   } else {
+    //     console.log("L'onglet est actif");
+    //   }
+    // });
   }
 
   public update() {
@@ -502,6 +502,7 @@ export class MemView {
     this.memViewRender?.onResize();
 
     this.update();
+    this.updateUI();
   }
 
   public reOrderArrays() {

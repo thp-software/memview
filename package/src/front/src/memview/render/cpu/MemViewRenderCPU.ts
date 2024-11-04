@@ -37,8 +37,8 @@ export class MemViewRenderCPU implements MemViewRender {
     this.backgroundCanvas = document.createElement("canvas");
     this.backgroundCanvas.style.width = "100%";
     this.backgroundCanvas.style.height = "100%";
-    this.backgroundCanvas.width = container.clientWidth;
-    this.backgroundCanvas.height = container.clientHeight;
+    this.backgroundCanvas.width = Math.floor(container.clientWidth);
+    this.backgroundCanvas.height = Math.floor(container.clientHeight);
     this.backgroundCanvas.style.zIndex = `${10}`;
     this.backgroundCanvas.style.position = "absolute";
 
@@ -49,8 +49,8 @@ export class MemViewRenderCPU implements MemViewRender {
     this.arrayCellsCanvas = document.createElement("canvas");
     this.arrayCellsCanvas.style.width = "100%";
     this.arrayCellsCanvas.style.height = "100%";
-    this.arrayCellsCanvas.width = container.clientWidth;
-    this.arrayCellsCanvas.height = container.clientHeight;
+    this.arrayCellsCanvas.width = Math.floor(container.clientWidth);
+    this.arrayCellsCanvas.height = Math.floor(container.clientHeight);
     this.arrayCellsCanvas.style.zIndex = `${11}`;
     this.arrayCellsCanvas.style.position = "absolute";
 
@@ -61,8 +61,8 @@ export class MemViewRenderCPU implements MemViewRender {
     this.arrayAtlasCanvas = document.createElement("canvas");
     this.arrayAtlasCanvas.style.width = "100%";
     this.arrayAtlasCanvas.style.height = "100%";
-    this.arrayAtlasCanvas.width = container.clientWidth;
-    this.arrayAtlasCanvas.height = container.clientHeight;
+    this.arrayAtlasCanvas.width = Math.floor(container.clientWidth);
+    this.arrayAtlasCanvas.height = Math.floor(container.clientHeight);
     this.arrayAtlasCanvas.style.zIndex = `${12}`;
     this.arrayAtlasCanvas.style.position = "absolute";
     this.arrayAtlasCanvas.style.imageRendering = "pixelated";
@@ -78,8 +78,8 @@ export class MemViewRenderCPU implements MemViewRender {
     this.arrayCellInfosCanvas = document.createElement("canvas");
     this.arrayCellInfosCanvas.style.width = "100%";
     this.arrayCellInfosCanvas.style.height = "100%";
-    this.arrayCellInfosCanvas.width = container.clientWidth;
-    this.arrayCellInfosCanvas.height = container.clientHeight;
+    this.arrayCellInfosCanvas.width = Math.floor(container.clientWidth);
+    this.arrayCellInfosCanvas.height = Math.floor(container.clientHeight);
     this.arrayCellInfosCanvas.style.zIndex = `${13}`;
     this.arrayCellInfosCanvas.style.position = "absolute";
     // image-rendering: crisp-edges;
@@ -92,8 +92,8 @@ export class MemViewRenderCPU implements MemViewRender {
     this.canvasUI = document.createElement("canvas");
     this.canvasUI.style.width = "100%";
     this.canvasUI.style.height = "100%";
-    this.canvasUI.width = container.clientWidth;
-    this.canvasUI.height = container.clientHeight;
+    this.canvasUI.width = Math.floor(container.clientWidth);
+    this.canvasUI.height = Math.floor(container.clientHeight);
     this.canvasUI.style.zIndex = `${14}`;
     this.canvasUI.style.position = "absolute";
 
@@ -177,7 +177,10 @@ export class MemViewRenderCPU implements MemViewRender {
       this.backgroundCanvasContext &&
       this.canvasUI &&
       this.canvasUIContext &&
-      this.arrayCellInfosCanvasContext
+      this.arrayCellInfosCanvasContext &&
+      this.arrayAtlasCanvas &&
+      this.arrayAtlasCanvasContext &&
+      this.arrayCellsCanvasContext
     ) {
       let maxSize: Vector2 = { x: data.length, y: 1 };
 
@@ -217,6 +220,8 @@ export class MemViewRenderCPU implements MemViewRender {
         }
 
         MemViewDraw.drawElement(
+          this.arrayCellsCanvasContext,
+          this.arrayAtlasCanvasContext,
           this.arrayCellInfosCanvasContext,
           this.atlasImage,
           this.atlas?.textureSize,
@@ -251,7 +256,10 @@ export class MemViewRenderCPU implements MemViewRender {
       this.canvasUIContext &&
       this.arrayCellInfosCanvasContext &&
       this.offscreenCanvas &&
-      this.offscreenCanvasContext
+      this.offscreenCanvasContext &&
+      this.arrayAtlasCanvas &&
+      this.arrayAtlasCanvasContext &&
+      this.arrayCellsCanvasContext
     ) {
       let maxSize: Vector2 = { x: 0, y: data.length };
 
@@ -337,10 +345,11 @@ export class MemViewRenderCPU implements MemViewRender {
             }
 
             MemViewDraw.drawElement(
+              this.arrayCellsCanvasContext,
+              this.arrayAtlasCanvasContext,
               this.arrayCellInfosCanvasContext,
               this.atlasImage,
               this.atlas?.textureSize,
-              // { x: iX, y: iY },
               { x: position.x + iX * 64, y: position.y + iY * 64 },
               zoomFactor,
               {
@@ -395,7 +404,10 @@ export class MemViewRenderCPU implements MemViewRender {
       this.canvasUIContext &&
       this.arrayCellInfosCanvasContext &&
       this.offscreenCanvas &&
-      this.offscreenCanvasContext
+      this.offscreenCanvasContext &&
+      this.arrayAtlasCanvas &&
+      this.arrayAtlasCanvasContext &&
+      this.arrayCellsCanvasContext
     ) {
       // MemViewDraw.drawArrayContour(
       //   this.backgroundCanvasContext,
@@ -473,6 +485,8 @@ export class MemViewRenderCPU implements MemViewRender {
             }
 
             MemViewDraw.drawElement(
+              this.arrayCellsCanvasContext,
+              this.arrayAtlasCanvasContext,
               this.arrayCellInfosCanvasContext,
               this.atlasImage,
               this.atlas?.textureSize,
@@ -524,10 +538,6 @@ export class MemViewRenderCPU implements MemViewRender {
     }
   }
 
-  // setPosition(position: Vector2): void {
-  //   console.log(position);
-  // }
-
   clean(): void {
     this.backgroundCanvas?.remove();
     this.arrayCellInfosCanvas?.remove();
@@ -539,24 +549,45 @@ export class MemViewRenderCPU implements MemViewRender {
 
   onResize(): void {
     if (this.backgroundCanvas) {
-      this.backgroundCanvas.width = this.backgroundCanvas.offsetWidth;
-      this.backgroundCanvas.height = this.backgroundCanvas.offsetHeight;
+      this.backgroundCanvas.width = Math.floor(
+        this.backgroundCanvas.offsetWidth
+      );
+      this.backgroundCanvas.height = Math.floor(
+        this.backgroundCanvas.offsetHeight
+      );
     }
     if (this.arrayCellsCanvas) {
-      this.arrayCellsCanvas.width = this.arrayCellsCanvas.offsetWidth;
-      this.arrayCellsCanvas.height = this.arrayCellsCanvas.offsetHeight;
+      this.arrayCellsCanvas.width = Math.floor(
+        this.arrayCellsCanvas.offsetWidth
+      );
+      this.arrayCellsCanvas.height = Math.floor(
+        this.arrayCellsCanvas.offsetHeight
+      );
     }
     if (this.arrayAtlasCanvas) {
-      this.arrayAtlasCanvas.width = this.arrayAtlasCanvas.offsetWidth;
-      this.arrayAtlasCanvas.height = this.arrayAtlasCanvas.offsetHeight;
+      this.arrayAtlasCanvas.width = Math.floor(
+        this.arrayAtlasCanvas.offsetWidth
+      );
+      this.arrayAtlasCanvas.height = Math.floor(
+        this.arrayAtlasCanvas.offsetHeight
+      );
+
+      if (this.arrayAtlasCanvasContext) {
+        this.arrayAtlasCanvasContext.imageSmoothingEnabled = false;
+        this.arrayAtlasCanvas.style.imageRendering = "pixelated";
+      }
     }
     if (this.arrayCellInfosCanvas) {
-      this.arrayCellInfosCanvas.width = this.arrayCellInfosCanvas.offsetWidth;
-      this.arrayCellInfosCanvas.height = this.arrayCellInfosCanvas.offsetHeight;
+      this.arrayCellInfosCanvas.width = Math.floor(
+        this.arrayCellInfosCanvas.offsetWidth
+      );
+      this.arrayCellInfosCanvas.height = Math.floor(
+        this.arrayCellInfosCanvas.offsetHeight
+      );
     }
     if (this.canvasUI) {
-      this.canvasUI.width = this.canvasUI.offsetWidth;
-      this.canvasUI.height = this.canvasUI.offsetHeight;
+      this.canvasUI.width = Math.floor(this.canvasUI.offsetWidth);
+      this.canvasUI.height = Math.floor(this.canvasUI.offsetHeight);
     }
   }
 
@@ -567,7 +598,6 @@ export class MemViewRenderCPU implements MemViewRender {
   setAtlas(atlas: Atlas): Promise<void> {
     return new Promise((resolve) => {
       this.atlas = atlas;
-      console.log(atlas.texture);
       this.atlasImage = new Image();
       this.atlasImage.src = this.atlas.texture;
       this.atlasImage.onload = () => {
