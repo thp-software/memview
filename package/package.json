@@ -5,12 +5,13 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "nodemon --watch src --ext ts,tsx --exec npm run fast-build",
-    "build": "npm run clean-dist && npm run build-back && npm run build-front && npm run temp-to-dist && npm run copy-package && npm run copy-readme && npm run copy-license",
+    "build": "npm run clean-dist && npm run clean-temp && npm run build-back && npm run build-front && npm run temp-to-dist && npm run copy-package && npm run copy-readme && npm run copy-license",
     "fast-build": "npm run build-back && npm run build-front && npm run temp-to-dist",
     "build-back": "rollup -c",
     "build-front": "cd ./src/front/ && npm run build && cd ./dist && cpy . ../../../temp/",
     "temp-to-dist": "cd ./temp && cpy . ../dist/",
     "clean-dist": "rimraf dist",
+    "clean-temp": "rimraf temp",
     "copy-package": "cd assets && cpy package.json ../dist",
     "copy-readme": "cd .. && cpy README.md ./package/dist",
     "copy-license": "cd .. && cpy LICENSE ./package/dist"
