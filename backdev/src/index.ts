@@ -18,7 +18,7 @@ import {
     // Wait for interface to be opened
     waitForTab: true,
     // Automatically open interface at start
-    openNewTab: true,
+    openNewTab: false,
     // No auto order
     autoOrder: "None",
     renderOptions: {
@@ -109,6 +109,23 @@ import {
     }
   }
 
+  await mem.log2d(
+    // Array unique id
+    "my_array_id",
+    // Array reference
+    myArray,
+    // Options
+    {
+      // Wait for 1000ms before continuing.
+      waitFor: 50,
+      // Wait for the array to be rendered before continuing.
+      isSync: true,
+      mapper: customMapper,
+      output: customOutput,
+      position: { x: 0, y: 0 },
+    }
+  );
+
   for (let i = 0; i < 10000; i++) {
     // Randomize the array for each iteration
     // for (let iY = 0; iY < size.y; iY++) {
@@ -125,36 +142,19 @@ import {
 
     await mem.log2d(
       // Array unique id
-      "my_array_id",
+      "my_array_id_2",
       // Array reference
-      myArray,
+      myArrayTop,
       // Options
       {
         // Wait for 1000ms before continuing.
-        waitFor: 50,
+        waitFor: 33,
         // Wait for the array to be rendered before continuing.
         isSync: true,
-        mapper: customMapper,
+        mapper: customMapperTop,
         output: customOutput,
         position: { x: 0, y: 0 },
       }
     );
-
-    // await mem.log2d(
-    //   // Array unique id
-    //   "my_array_id_2",
-    //   // Array reference
-    //   myArrayTop,
-    //   // Options
-    //   {
-    //     // Wait for 1000ms before continuing.
-    //     waitFor: 33,
-    //     // Wait for the array to be rendered before continuing.
-    //     isSync: true,
-    //     mapper: customMapperTop,
-    //     output: customOutput,
-    //     position: { x: 0, y: 0 },
-    //   }
-    // );
   }
 })();

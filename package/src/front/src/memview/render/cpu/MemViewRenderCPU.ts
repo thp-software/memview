@@ -540,7 +540,7 @@ export class MemViewRenderCPU implements MemViewRender {
 
   clean(): void {
     this.backgroundCanvas?.remove();
-    this.arrayCellInfosCanvas?.remove();
+    this.arrayCellsCanvas?.remove();
     this.arrayAtlasCanvas?.remove();
     this.arrayCellInfosCanvas?.remove();
     this.canvasUI?.remove();
