@@ -28,6 +28,10 @@ import { mergeBaseMemViewLogOptions } from "../../shared/data/BaseMemViewLogOpti
 import { KeyCode } from "../../shared/enums/KeyCode";
 import { KeyEvent } from "../../shared/interfaces/KeyEvent";
 import { Zoom } from "../../shared/enums/Zoom";
+import { MemViewDisplayLogOptions } from "../../shared/interfaces/MemViewDisplayLogOptions";
+import { DisplayUpdate } from "../../shared/interfaces/DisplayUpdate";
+import { mergeBaseMemViewDisplayLogOptions } from "../../shared/data/BaseMemViewDisplayLogOptions";
+import { resolve } from "path";
 
 export default class MemView {
   /**
@@ -44,6 +48,8 @@ export default class MemView {
    * Monitored arrays
    */
   private arrays: MemViewArrayBack[] = [];
+
+  private displays: DisplayUpdate[] = [];
 
   /**
    * Logs history
@@ -169,6 +175,10 @@ export default class MemView {
               socket.emit("array_update", toSend);
             }
           }
+          for (let i = 0; i < this.displays.length; i++) {
+            socket.emit("display_update", this.displays[i], () => {});
+          }
+
           socket.emit(
             "log",
             this.logs.length > 100
@@ -372,6 +382,39 @@ export default class MemView {
     options?: DeepPartial<MemViewLogOptions>
   ): Promise<void> {
     return this.logMessage(value, LogLevel.error, options);
+  }
+
+  public async logDisplay(
+    id: string,
+    size: Vector2,
+    options?: Partial<MemViewDisplayLogOptions>
+  ): Promise<void> {
+    return new Promise(async (resolve) => {
+      const finalOptions = mergeBaseMemViewDisplayLogOptions(options);
+
+      const index = this.displays.findIndex((el) => el.id === id);
+
+      const data: DisplayUpdate = {
+        id,
+        size,
+        isSync: finalOptions.isSync,
+        isBreakpoint: finalOptions.isBreakpoint,
+        waitFor: finalOptions.waitFor,
+        position: finalOptions.position,
+        elements: finalOptions.elements,
+        backgroundColor: finalOptions.backgroundColor,
+      };
+
+      if (index >= 0) {
+        this.displays[index] = data;
+      } else {
+        this.displays.push(data);
+      }
+
+      await this.io?.emit("display_update", data, () => {
+        resolve();
+      });
+    });
   }
 
   /**

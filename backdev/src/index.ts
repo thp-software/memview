@@ -4,8 +4,6 @@ import {
   MemViewMapperOutput,
   Vector2,
   Anchor,
-  KeyCode,
-  KeyEvent,
   Zoom,
 } from "memview";
 
@@ -28,6 +26,12 @@ import {
       textDisplayThreshold: Zoom.Multiply2,
     },
   });
+
+  await mem.loadAtlas(
+    __dirname + "/../assets/single_texture_atlas.png",
+    { x: 1, y: 1 },
+    { x: 8, y: 8 }
+  );
 
   // Define how to render each cell of the array
   const customMapper: MemViewMapper = {
@@ -90,14 +94,9 @@ import {
     },
   };
 
-  // You can listen to keyboard event
-  mem.bindKeyEvent((data: KeyEvent) => {
-    // mem.log(`Keyboard: ${data.key} -> ${data.isPressed}`);
-  });
-
   const myArray: number[][] = [];
   const myArrayTop: number[][] = [];
-  const size: Vector2 = { x: 32, y: 32 };
+  const size: Vector2 = { x: 16, y: 16 };
 
   // Init Array
   for (let iY = 0; iY < size.y; iY++) {
@@ -109,36 +108,14 @@ import {
     }
   }
 
-  await mem.log2d(
-    // Array unique id
-    "my_array_id",
-    // Array reference
-    myArray,
-    // Options
-    {
-      // Wait for 1000ms before continuing.
-      waitFor: 50,
-      // Wait for the array to be rendered before continuing.
-      isSync: true,
-      mapper: customMapper,
-      output: customOutput,
-      position: { x: 0, y: 0 },
-    }
-  );
-
   for (let i = 0; i < 10000; i++) {
     // Randomize the array for each iteration
-    // for (let iY = 0; iY < size.y; iY++) {
-    //   for (let iX = 0; iX < size.x; iX++) {
-    //     myArray[iY][iX] = Math.random();
-    //     myArrayTop[iY][iX] = Math.random();
-    //   }
-    // }
-
-    // Another way to get keyboard events.
-    // KeyCode is bind on the physical position of the key.
-    // That's mean that "KeyQ" is "Q" on QWERTY layout but "A" on AZERTY layout.
-    mem.log("Q (QWERTY) / A (AZERTY) " + mem.getKey(KeyCode.KeyQ));
+    for (let iY = 0; iY < size.y; iY++) {
+      for (let iX = 0; iX < size.x; iX++) {
+        myArray[iY][iX] = Math.random();
+        myArrayTop[iY][iX] = Math.random();
+      }
+    }
 
     await mem.log2d(
       // Array unique id
@@ -154,6 +131,45 @@ import {
         mapper: customMapperTop,
         output: customOutput,
         position: { x: 0, y: 0 },
+      }
+    );
+
+    await mem.logDisplay(
+      "dis",
+      { x: 6, y: 4 },
+      {
+        position: { x: 17 * 64, y: 0 },
+        backgroundColor: "#606060",
+        elements: [
+          {
+            type: "Div",
+            backgroundColor: "#779",
+            position: { x: 8, y: 30 },
+            size: { x: 340, y: 20 },
+          },
+          {
+            type: "Text",
+            color: "#ddd",
+            position: { x: 10, y: 10 },
+            value: "This is a Display",
+            fontSize: 36,
+            alignement: "left",
+          },
+          {
+            type: "Text",
+            color: "#ddd",
+            position: { x: 150, y: 80 },
+            value: `iteration: ${i}`,
+            fontSize: 26,
+            alignement: "left",
+          },
+          {
+            type: "Texture",
+            position: { x: 10, y: 80 },
+            textureIndex: { x: 1, y: 0 },
+            scale: 2,
+          },
+        ],
       }
     );
   }

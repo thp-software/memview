@@ -38,7 +38,7 @@ You can display items on a draggable and zoomable map:
 - 🔢 Log arrays (1D, 2D, and flattened 2D) ✅
 - 💬 Log messages in the console (log, warn, and error) ✅
 - 🖼️ Log images (RGB, RGBA) <b><i>- Coming soon -</i></b>
-- 📟 Log displays <b><i>- Coming soon -</i></b>
+- 📟 Log displays <b><i>- Beta -</i></b>
 - 🌳 Log tree structures <b><i>- Potential future feature -</i></b>
 - 🔊 Log audio (music, spatialized sounds) <b><i>- Potential future feature -</i></b>
 

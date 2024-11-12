@@ -4,6 +4,12 @@ import { MemViewElement } from "../../../../../shared/interfaces/MemViewElement"
 import { Anchor } from "../../../../../shared/enums/Anchor";
 import { MemViewRenderOptions } from "../../../../../shared/interfaces/MemViewRenderOptions";
 import { zooms } from "../../../../../shared/enums/Zoom";
+import {
+  DisplayElement,
+  DisplayElementDiv,
+  DisplayElementText,
+  DisplayElementTexture,
+} from "../../../../../shared/interfaces/MemViewDisplayLogOptions";
 
 export abstract class MemViewDraw {
   public static drawElement(
@@ -91,6 +97,68 @@ export abstract class MemViewDraw {
       //   Math.floor(position.x * zoomFactor + 2 * zoomFactor),
       //   Math.floor(position.y * zoomFactor + 2 * zoomFactor)
       // );
+    }
+  }
+
+  public static drawDisplay(
+    cellContext: CanvasRenderingContext2D,
+    infosContext: CanvasRenderingContext2D,
+    atlasContext: CanvasRenderingContext2D,
+    atlasImage: any | null,
+    position: Vector2,
+    size: Vector2,
+    backgroundColor: string,
+    zoomFactor: number,
+    elements: DisplayElement[]
+  ) {
+    cellContext.fillStyle = backgroundColor;
+    cellContext.strokeStyle = "black";
+    cellContext.lineWidth = 4;
+    cellContext.fillRect(
+      Math.floor(position.x * zoomFactor),
+      Math.floor(position.y * zoomFactor),
+      Math.floor(size.x * 64 * zoomFactor),
+      Math.floor(size.y * 64 * zoomFactor)
+    );
+
+    for (let i = 0; i < elements.length; i++) {
+      if (elements[i].type === "Text") {
+        const element = elements[i] as DisplayElementText;
+
+        infosContext.fillStyle = element.color;
+        infosContext.textAlign = element.alignement;
+        infosContext.textBaseline = "top";
+        infosContext.font = `${element.fontSize * zoomFactor}px Consolas`;
+        infosContext.fillText(
+          element.value,
+          Math.floor(position.x * zoomFactor + element.position.x * zoomFactor),
+          Math.floor(position.y * zoomFactor + element.position.y * zoomFactor)
+        );
+      } else if (elements[i].type === "Div") {
+        const element = elements[i] as DisplayElementDiv;
+
+        infosContext.fillStyle = element.backgroundColor;
+        infosContext.fillRect(
+          Math.floor(position.x * zoomFactor + element.position.x * zoomFactor),
+          Math.floor(position.y * zoomFactor + element.position.y * zoomFactor),
+          Math.floor(element.size.x * zoomFactor),
+          Math.floor(element.size.y * zoomFactor)
+        );
+      } else if (elements[i].type === "Texture") {
+        const element = elements[i] as DisplayElementTexture;
+
+        atlasContext.drawImage(
+          atlasImage,
+          Math.floor(element.textureIndex.x * 8),
+          Math.floor(element.textureIndex.y * 8),
+          Math.floor(8),
+          Math.floor(8),
+          Math.floor(position.x * zoomFactor + element.position.x * zoomFactor),
+          Math.floor(position.y * zoomFactor + element.position.y * zoomFactor),
+          Math.floor(64 * zoomFactor * element.scale),
+          Math.floor(64 * zoomFactor * element.scale)
+        );
+      }
     }
   }
 

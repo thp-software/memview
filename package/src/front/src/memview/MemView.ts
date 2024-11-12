@@ -8,6 +8,7 @@ import { MemViewRender } from "./render/MemViewRender";
 import { MemViewRenderCPU } from "./render/cpu/MemViewRenderCPU";
 import { decodeMapper } from "../../../shared/Utils/mapper";
 import { ArrayUpdate } from "../../../shared/interfaces/ArrayUpdate";
+import { DisplayUpdate } from "../../../shared/interfaces/DisplayUpdate";
 import { MemViewArrayFront } from "./arrays/MemViewArray";
 import { MemViewMapper } from "../../../shared/interfaces/MemViewMapper";
 import { KeyCode } from "../../../shared/enums/KeyCode";
@@ -19,6 +20,8 @@ export class MemView {
   private eventEmitter: EventEmitter;
 
   private arrays: MemViewArrayFront[] = [];
+
+  private displays: DisplayUpdate[] = [];
 
   private memViewRender: MemViewRender | null = null;
 
@@ -90,6 +93,11 @@ export class MemView {
 
       this.socket.on("array_update", (data: any, ack: any) => {
         this.onArrayUpdate(data);
+        ack();
+      });
+
+      this.socket.on("display_update", (data: any, ack: any) => {
+        this.onDisplayUpdate(data);
         ack();
       });
 
@@ -255,6 +263,18 @@ export class MemView {
     this.updateUI();
   }
 
+  private onDisplayUpdate(update: DisplayUpdate) {
+    const index = this.displays.findIndex((el) => el.id === update.id);
+
+    if (index >= 0) {
+      this.displays[index] = update;
+    } else {
+      this.displays.push(update);
+    }
+
+    this.update();
+  }
+
   public sendMessage(event: string, message: any) {
     if (this.socket) {
       this.socket.emit(event, message);
@@ -334,6 +354,21 @@ export class MemView {
           this.zooms[this.zoomIndex]
         );
         this.arrays[i].setLastRenderTime(performance.now() - start);
+      }
+
+      for (let i = 0; i < this.displays.length; i++) {
+        // const start: number = performance.now();
+        this.memViewRender.drawDisplay(
+          {
+            x: -this.offset.x + this.displays[i].position.x,
+            y: -this.offset.y + this.displays[i].position.y,
+          },
+          this.displays[i].size,
+          this.displays[i].backgroundColor,
+          this.zooms[this.zoomIndex],
+          this.displays[i].elements
+        );
+        // this.arrays[i].setLastRenderTime(performance.now() - start);
       }
 
       this.getArrayUnderMouse();

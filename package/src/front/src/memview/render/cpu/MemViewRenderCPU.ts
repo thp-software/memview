@@ -7,6 +7,7 @@ import { Atlas } from "../../../../../shared/interfaces/Atlas";
 import { MemViewMapper } from "../../../../../shared/interfaces/MemViewMapper";
 import { MemViewRenderOptions } from "../../../../../shared/interfaces/MemViewRenderOptions";
 import { zooms } from "../../../../../shared/enums/Zoom";
+import { DisplayElement } from "../../../../../shared/interfaces/MemViewDisplayLogOptions";
 
 export class MemViewRenderCPU implements MemViewRender {
   // private canvas: HTMLCanvasElement | null = null;
@@ -506,6 +507,32 @@ export class MemViewRenderCPU implements MemViewRender {
           }
         }
       }
+    }
+  }
+
+  public drawDisplay(
+    position: Vector2,
+    size: Vector2,
+    backgroundColor: string,
+    zoomFactor: number,
+    elements: DisplayElement[]
+  ): void {
+    if (
+      this.arrayCellsCanvasContext &&
+      this.arrayCellInfosCanvasContext &&
+      this.arrayAtlasCanvasContext
+    ) {
+      MemViewDraw.drawDisplay(
+        this.arrayCellsCanvasContext,
+        this.arrayCellInfosCanvasContext,
+        this.arrayAtlasCanvasContext,
+        this.atlasImage,
+        position,
+        size,
+        backgroundColor,
+        zoomFactor,
+        elements
+      );
     }
   }
 

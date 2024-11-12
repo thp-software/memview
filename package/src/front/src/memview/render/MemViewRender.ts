@@ -1,4 +1,5 @@
 import { Atlas } from "../../../../shared/interfaces/Atlas";
+import { DisplayElement } from "../../../../shared/interfaces/MemViewDisplayLogOptions";
 import { MemViewMapper } from "../../../../shared/interfaces/MemViewMapper";
 import { MemViewRenderOptions } from "../../../../shared/interfaces/MemViewRenderOptions";
 import { Vector2 } from "../../../../shared/interfaces/Vector2";
@@ -40,6 +41,14 @@ export interface MemViewRender {
     mapper: MemViewMapper,
     isBreakpoint: boolean,
     renderOptions: MemViewRenderOptions
+  ): void;
+
+  drawDisplay(
+    position: Vector2,
+    size: Vector2,
+    backgroundColor: string,
+    zoomFactor: number,
+    elements: DisplayElement[]
   ): void;
 
   drawArraysUI(): void;
