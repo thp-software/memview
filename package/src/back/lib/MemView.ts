@@ -80,6 +80,8 @@ export default class MemView {
       waitForTab: true,
       showSideBar: true,
       showConsole: true,
+      lockDrag: false,
+      lockZoom: false,
       targetRender: "CPU",
       autoOrder: "Wrap",
       renderOptions: {

@@ -21,6 +21,8 @@ import {
     autoOrder: "None",
     showSideBar: true,
     showConsole: true,
+    lockDrag: true,
+    lockZoom: true,
     renderOptions: {
       bitmapViewThreshold: Zoom.Divide16,
       gridDisplayThreshold: Zoom.Base,

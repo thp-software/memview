@@ -432,7 +432,7 @@ export class MemView {
       });
     }
 
-    if (this.isDragging) {
+    if (!this._options.lockDrag && this.isDragging) {
       const newOffset: Vector2 = {
         x:
           this.startDrag.x -
@@ -497,6 +497,9 @@ export class MemView {
    * For every mouse wheel event
    */
   private onMouseWheel(event: WheelEvent) {
+    if (this._options.lockZoom) {
+      return;
+    }
     const previousZoom = this.zooms[this.zoomIndex];
 
     let newIndex = this.zoomIndex + (event.deltaY < 0 ? 1 : -1);

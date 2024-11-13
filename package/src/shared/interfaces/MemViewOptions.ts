@@ -22,6 +22,14 @@ export interface MemViewOptions {
    */
   showConsole: boolean;
   /**
+   * Lock mouse drag
+   */
+  lockDrag: boolean;
+  /**
+   * Lock mouse zoom
+   */
+  lockZoom: boolean;
+  /**
    * Rendering target
    */
   targetRender: "CPU" | "GPU";
