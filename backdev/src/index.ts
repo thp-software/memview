@@ -19,6 +19,8 @@ import {
     openNewTab: false,
     // No auto order
     autoOrder: "None",
+    showSideBar: true,
+    showConsole: true,
     renderOptions: {
       bitmapViewThreshold: Zoom.Divide16,
       gridDisplayThreshold: Zoom.Base,

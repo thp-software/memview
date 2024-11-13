@@ -10,6 +10,7 @@ function MemViewWrapper() {
   const [isMemViewReady, setIsMemViewReady] = useState(false);
 
   const [showSidePanel, setShowSidePanel] = useState<boolean>(false);
+  const [showConsole, setShowConsole] = useState<boolean>(false);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -30,6 +31,7 @@ function MemViewWrapper() {
 
   const onOptions = (data: any) => {
     setShowSidePanel(data.showSideBar);
+    setShowConsole(data.showConsole);
   };
 
   return (
@@ -45,7 +47,7 @@ function MemViewWrapper() {
       {isMemViewReady && memViewRef.current && showSidePanel && (
         <SidePanel memViewRef={memViewRef.current} />
       )}
-      {isMemViewReady && memViewRef.current && (
+      {isMemViewReady && memViewRef.current && showConsole && (
         <Console memViewRef={memViewRef.current} />
       )}
     </>

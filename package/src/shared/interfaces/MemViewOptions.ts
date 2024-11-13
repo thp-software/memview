@@ -18,6 +18,10 @@ export interface MemViewOptions {
    */
   showSideBar: boolean;
   /**
+   * Show the console
+   */
+  showConsole: boolean;
+  /**
    * Rendering target
    */
   targetRender: "CPU" | "GPU";

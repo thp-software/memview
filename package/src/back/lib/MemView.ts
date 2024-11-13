@@ -79,6 +79,7 @@ export default class MemView {
       openNewTab: true,
       waitForTab: true,
       showSideBar: true,
+      showConsole: true,
       targetRender: "CPU",
       autoOrder: "Wrap",
       renderOptions: {
