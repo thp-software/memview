@@ -23,6 +23,7 @@ import {
     showConsole: false,
     lockDrag: true,
     lockZoom: true,
+    showCursor: true,
     renderOptions: {
       bitmapViewThreshold: Zoom.Divide16,
       gridDisplayThreshold: Zoom.Base,

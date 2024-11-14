@@ -22,6 +22,10 @@ export interface MemViewOptions {
    */
   showConsole: boolean;
   /**
+   * Show UI cursor
+   */
+  showCursor: boolean;
+  /**
    * Lock mouse drag
    */
   lockDrag: boolean;

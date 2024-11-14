@@ -388,12 +388,14 @@ export class MemView {
 
   public updateUI() {
     if (this.memViewRender) {
-      this.memViewRender.drawUI(
-        this.hoveredArray,
-        this.hoveredArrayCell,
-        this.offset,
-        this.zooms[this.zoomIndex]
-      );
+      if (this._options.showCursor) {
+        this.memViewRender.drawUI(
+          this.hoveredArray,
+          this.hoveredArrayCell,
+          this.offset,
+          this.zooms[this.zoomIndex]
+        );
+      }
     }
 
     let detailsRaw: string[] | undefined = this.hoveredArray?.mapper.details(

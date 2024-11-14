@@ -551,7 +551,7 @@ export class MemViewRenderCPU implements MemViewRender {
         this.canvasUI.width,
         this.canvasUI.height
       );
-      if (hoveredArray != null)
+      if (hoveredArray != null) {
         MemViewDraw.drawElementCursor(
           this.canvasUIContext,
           {
@@ -562,6 +562,7 @@ export class MemViewRenderCPU implements MemViewRender {
           },
           zoomFactor
         );
+      }
     }
   }
 

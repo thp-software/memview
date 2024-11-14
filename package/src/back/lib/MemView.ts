@@ -82,6 +82,7 @@ export default class MemView {
       waitForTab: true,
       showSideBar: true,
       showConsole: true,
+      showCursor: true,
       lockDrag: false,
       lockZoom: false,
       targetRender: "CPU",
