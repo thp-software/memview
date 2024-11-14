@@ -31,7 +31,7 @@ import { Zoom } from "../../shared/enums/Zoom";
 import { MemViewDisplayLogOptions } from "../../shared/interfaces/MemViewDisplayLogOptions";
 import { DisplayUpdate } from "../../shared/interfaces/DisplayUpdate";
 import { mergeBaseMemViewDisplayLogOptions } from "../../shared/data/BaseMemViewDisplayLogOptions";
-import { resolve } from "path";
+import { ViewData } from "../../shared/interfaces/ViewData";
 
 export default class MemView {
   /**
@@ -72,6 +72,8 @@ export default class MemView {
   private pressedKeys: Map<KeyCode, boolean> = new Map<KeyCode, boolean>();
 
   private keyEventCallback: ((data: KeyEvent) => void) | undefined = undefined;
+
+  private viewData: ViewData | undefined = undefined;
 
   constructor() {
     this.options = {
@@ -132,6 +134,9 @@ export default class MemView {
         socket.emit("options", this.options, () => {
           if (this.atlas) {
             socket.emit("load_atlas", this.atlas, () => {});
+          }
+          if (this.viewData != undefined) {
+            socket.emit("set_view", this.viewData);
           }
           for (let i = 0; i < this.arrays.length; i++) {
             if (this.arrays[i].type === MemViewArrayType.Array2dFlat) {
@@ -418,6 +423,15 @@ export default class MemView {
         resolve();
       });
     });
+  }
+
+  /**
+   * Set the view position and zoom
+   * @param {ViewData} - Position/Zoom to apply
+   */
+  public setView(viewData: ViewData) {
+    this.viewData = viewData;
+    this.io?.emit("set_view", viewData);
   }
 
   /**

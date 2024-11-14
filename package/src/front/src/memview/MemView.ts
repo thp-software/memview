@@ -13,6 +13,7 @@ import { MemViewArrayFront } from "./arrays/MemViewArray";
 import { MemViewMapper } from "../../../shared/interfaces/MemViewMapper";
 import { KeyCode } from "../../../shared/enums/KeyCode";
 import { zooms } from "../../../shared/enums/Zoom";
+import { ViewData } from "../../../shared/interfaces/ViewData";
 
 export class MemView {
   private container: HTMLDivElement;
@@ -58,6 +59,8 @@ export class MemView {
 
   pressedKeys: Map<KeyCode, boolean> = new Map<KeyCode, boolean>();
 
+  private viewData: ViewData | undefined = undefined;
+
   public constructor(container: HTMLDivElement, location: Location) {
     this.container = container;
 
@@ -99,6 +102,14 @@ export class MemView {
       this.socket.on("display_update", (data: any, ack: any) => {
         this.onDisplayUpdate(data);
         ack();
+      });
+
+      this.socket.on("set_view", (data: any) => {
+        this.viewData = data;
+        if (this.viewData) {
+          this.setView(this.viewData);
+          this.update();
+        }
       });
 
       this.socket.on("array_update_resume", (message: any) => {
@@ -539,6 +550,10 @@ export class MemView {
   private onResize() {
     this.memViewRender?.onResize();
 
+    if (this.viewData && this.viewData.handleResize) {
+      this.setView(this.viewData);
+    }
+
     this.update();
     this.updateUI();
   }
@@ -741,20 +756,42 @@ export class MemView {
     if (index >= 0) {
       const position = this.arrays[index].getPosition();
       const size = {
-        x: this.arrays[index].getSize().x * 64,
-        y: this.arrays[index].getSize().y * 64,
+        x: this.arrays[index].getSize().x,
+        y: this.arrays[index].getSize().y,
       };
-      this.offset = {
-        x:
-          position.x +
-          size.x / 2 -
-          window.innerWidth / this.zooms[this.zoomIndex] / 2,
-        y:
-          position.y +
-          size.y / 2 -
-          window.innerHeight / this.zooms[this.zoomIndex] / 2,
-      };
+
+      this.focusPosition({
+        x: position.x + size.x / 2,
+        y: position.y + size.y / 2,
+      });
       this.update();
     }
+  }
+
+  public focusPosition(position: Vector2) {
+    this.offset = {
+      x: position.x * 64 - window.innerWidth / this.zooms[this.zoomIndex] / 2,
+      y: position.y * 64 - window.innerHeight / this.zooms[this.zoomIndex] / 2,
+    };
+    this.update();
+  }
+
+  public setView(viewData: ViewData) {
+    let newIndex = viewData.zoom;
+
+    newIndex = Math.min(newIndex, this.zooms.length - 1);
+
+    newIndex = Math.max(newIndex, 0);
+
+    this.zoomIndex = newIndex;
+
+    this.offset = {
+      x:
+        viewData.position.x * 64 -
+        window.innerWidth / this.zooms[this.zoomIndex] / 2,
+      y:
+        viewData.position.y * 64 -
+        window.innerHeight / this.zooms[this.zoomIndex] / 2,
+    };
   }
 }

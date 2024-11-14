@@ -20,7 +20,7 @@ import {
     // No auto order
     autoOrder: "None",
     showSideBar: true,
-    showConsole: true,
+    showConsole: false,
     lockDrag: true,
     lockZoom: true,
     renderOptions: {
@@ -36,6 +36,12 @@ import {
     { x: 1, y: 1 },
     { x: 8, y: 8 }
   );
+
+  mem.setView({
+    position: { x: 8, y: 8 },
+    zoom: Zoom.Divide2,
+    handleResize: true,
+  });
 
   // Define how to render each cell of the array
   const customMapper: MemViewMapper = {
