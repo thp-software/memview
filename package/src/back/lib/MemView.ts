@@ -32,6 +32,8 @@ import { MemViewDisplayLogOptions } from "../../shared/interfaces/MemViewDisplay
 import { DisplayUpdate } from "../../shared/interfaces/DisplayUpdate";
 import { mergeBaseMemViewDisplayLogOptions } from "../../shared/data/BaseMemViewDisplayLogOptions";
 import { ViewData } from "../../shared/interfaces/ViewData";
+import { AudioManager, AudioRessource } from "../../shared/utils/AudioManager";
+import { AudioPlayerOptions } from "../../shared/interfaces/AudioPlayerOptions";
 
 export default class MemView {
   /**
@@ -75,6 +77,8 @@ export default class MemView {
 
   private viewData: ViewData | undefined = undefined;
 
+  private audioManager: AudioManager;
+
   constructor() {
     this.options = {
       port: 9000,
@@ -94,6 +98,7 @@ export default class MemView {
         textDisplayThreshold: Zoom.Base,
       },
     };
+    this.audioManager = new AudioManager();
   }
 
   /**
@@ -136,6 +141,16 @@ export default class MemView {
           if (this.atlas) {
             socket.emit("load_atlas", this.atlas, () => {});
           }
+
+          const audios: AudioRessource[] = this.audioManager.getAll();
+          for (let i = 0; i < audios.length; i++) {
+            this.io?.emit("audio_load", {
+              id: audios[i].id,
+              data: audios[i].data,
+              type: audios[i].type,
+            });
+          }
+
           if (this.viewData != undefined) {
             socket.emit("set_view", this.viewData);
           }
@@ -299,6 +314,122 @@ export default class MemView {
       });
       resolve(false);
     });
+  }
+
+  /**
+   * Load audio
+   * @param {string} - Unique Id of the ressource.
+   * @param {string} path - Path of the audio on the disk. Must be an absolute path.
+   * @returns {Promise<boolean>}
+   */
+  public async loadAudio(id: string, path: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      fs.readFile(path, (err, data) => {
+        if (err) {
+          console.error("Unable to load file:", err);
+          resolve(false);
+        }
+        const type: string | undefined = path.split(".").pop();
+        if (type != undefined && ["wav", "mp3", "ogg"].includes(type)) {
+          this.audioManager.add(id, data, type);
+          this.io?.emit("audio_load", { id, data, type }, () => {
+            resolve(true);
+          });
+        } else {
+          console.error("Only wav, mp3 and ogg are supported");
+          resolve(false);
+        }
+      });
+    });
+  }
+
+  /**
+   * Unload audio
+   * @param {string} - Unique Id of the ressource.
+   * @returns {Promise<boolean>}
+   */
+  public unloadAudio(id: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (this.audioManager.alreadyExist(id)) {
+        this.audioManager.remove(id);
+        this.io?.emit("audio_remove", { id }, () => {
+          resolve(true);
+        });
+      }
+      resolve(false);
+    });
+  }
+
+  /**
+   * Unload all audio
+   */
+  public unloadAllAudio(): void {
+    this.audioManager.removeAll();
+    this.io?.emit("audio_remove_all");
+  }
+
+  /**
+   * Play audio
+   * @param {string} - Id of the played audio
+   * @param {string} - Id of the loaded ressource
+   * @param {AudioPlayerOptions} - Options
+   */
+  public playAudio(
+    id: string,
+    ressourceId: string,
+    options?: AudioPlayerOptions
+  ): void {
+    this.io?.emit("audio_play", { id, ressourceId, options });
+  }
+
+  /**
+   * Pause audio
+   * @param {string} - Id of the played audio
+   */
+  public pauseAudio(id: string): void {
+    this.io?.emit("audio_pause", { id });
+  }
+
+  /**
+   * Resume audio
+   * @param {string} - Id of the played audio
+   */
+  public resumeAudio(id: string): void {
+    this.io?.emit("audio_resume", { id });
+  }
+
+  /**
+   * Stop audio
+   * @param {string} - Id of the played audio
+   */
+  public stopAudio(id: string): void {
+    this.io?.emit("audio_stop", { id });
+  }
+
+  /**
+   * Set the position of the played audio
+   * @param {string} - Id of the played audio
+   * @param {Vector2} - Position of the audio (for spatialization)
+   */
+  // public setAudioPosition(id: string, position: Vector2): void {
+  //   this.io?.emit("audio_position", { id, position });
+  // }
+
+  /**
+   * Set the position of the listener
+   * @param {Vector2} - Position of the listener
+   */
+  // public setAudioListenerPosition(position: Vector2): void {
+  //   this.io?.emit("audio_listener_position", { position });
+  // }
+
+  /**
+   * Set the volume of the played audio
+   * @param {string} - Id of the played audio
+   * @param {number} - Volume
+   */
+  public setAudioVolume(id: string, volume: number): void {
+    this.io?.emit("audio_volume", { id, volume });
   }
 
   /**

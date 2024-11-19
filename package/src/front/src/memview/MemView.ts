@@ -14,6 +14,8 @@ import { MemViewMapper } from "../../../shared/interfaces/MemViewMapper";
 import { KeyCode } from "../../../shared/enums/KeyCode";
 import { zooms } from "../../../shared/enums/Zoom";
 import { ViewData } from "../../../shared/interfaces/ViewData";
+import { AudioManager } from "../../../shared/Utils/AudioManager";
+import { AudioPlayer } from "./utils/AudioPlayer";
 
 export class MemView {
   private container: HTMLDivElement;
@@ -61,10 +63,16 @@ export class MemView {
 
   private viewData: ViewData | undefined = undefined;
 
+  private audioManager: AudioManager;
+  private audioPlayer: AudioPlayer;
+
   public constructor(container: HTMLDivElement, location: Location) {
     this.container = container;
 
     this.eventEmitter = new EventEmitter();
+
+    this.audioManager = new AudioManager();
+    this.audioPlayer = new AudioPlayer();
 
     this.location = location;
 
@@ -116,7 +124,54 @@ export class MemView {
         this.onResume(message);
       });
 
+      this.socket.on("audio_load", (message: any) => {
+        this.audioManager.add(message.id, message.data, message.type);
+      });
+
+      this.socket.on("audio_remove", (message: any) => {
+        this.audioManager.remove(message.id);
+      });
+
+      this.socket.on("audio_remove_all", () => {
+        this.audioManager.removeAll();
+      });
+
+      this.socket.on("audio_play", (message: any) => {
+        this.audioPlayer.play(
+          message.id,
+          this.audioManager.get(message.ressourceId)!,
+          message.options
+        );
+      });
+
+      this.socket.on("audio_pause", (message: any) => {
+        this.audioPlayer.pause(message.id);
+      });
+
+      this.socket.on("audio_resume", (message: any) => {
+        this.audioPlayer.resume(message.id);
+      });
+
+      this.socket.on("audio_stop", (message: any) => {
+        this.audioPlayer.stop(message.id);
+      });
+
+      this.socket.on("audio_listener_position", (_: any) => {
+        // this.audioPlayer.setListenerPosition(message.position);
+      });
+
+      this.socket.on("audio_position", (_: any) => {
+        // this.audioPlayer.setPosition(message.id, message.position);
+      });
+
+      this.socket.on("audio_volume", (message: any) => {
+        this.audioPlayer.setVolume(message.id, message.volume);
+      });
+
       this.socket.on("options", (data: any, ack: any) => {
+        this.audioPlayer.stopAll();
+        this.audioManager.removeAll();
+
         this._options = data;
         this.eventEmitter.emit("options", data);
 
