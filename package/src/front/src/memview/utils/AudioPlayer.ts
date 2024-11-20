@@ -40,8 +40,12 @@ export class AudioPlayer {
         volume: options.volume,
         loop: options.loop,
         onend: () => {
-          const newIndex = this.instanciedAudio.findIndex((el) => el.id === id);
-          this.instanciedAudio.splice(newIndex, 1);
+          if (!options.loop) {
+            const newIndex = this.instanciedAudio.findIndex(
+              (el) => el.id === id
+            );
+            this.instanciedAudio.splice(newIndex, 1);
+          }
         },
       });
 
