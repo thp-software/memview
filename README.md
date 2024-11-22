@@ -37,10 +37,10 @@ You can display items on a draggable and zoomable map:
 
 - 🔢 Log arrays (1D, 2D, and flattened 2D) ✅
 - 💬 Log messages in the console (log, warn, and error) ✅
-- 🖼️ Log images (RGB, RGBA) <b><i>- Coming soon -</i></b>
 - 📟 Log displays <b><i>- Beta -</i></b>
+- 🔊 Log audio (music, spatialized sounds) <b><i>- Beta -</i></b>
+- 🖼️ Log images (RGB, RGBA) <b><i>- Coming soon -</i></b>
 - 🌳 Log tree structures <b><i>- Potential future feature -</i></b>
-- 🔊 Log audio (music, spatialized sounds) <b><i>- Potential future feature -</i></b>
 
 ### Input
 
@@ -49,6 +49,14 @@ You can receive inputs:
 - 🖱️ Mouse events ✅
 - ⌨️ Keyboard events ✅
 - 🕹️ Gamepad events <b><i>- Potential future feature -</i></b>
+
+## Showcase / Code Example
+
+> More will come later
+
+### MemView Snake
+
+[A small snake game using MemView for render](https://github.com/thp-software/memview-snake)
 
 ## Installation
 
