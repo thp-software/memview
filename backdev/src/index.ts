@@ -21,8 +21,8 @@ import {
     autoOrder: "None",
     showSideBar: true,
     showConsole: false,
-    lockDrag: true,
-    lockZoom: true,
+    lockDrag: false,
+    lockZoom: false,
     showCursor: true,
     renderOptions: {
       bitmapViewThreshold: Zoom.Divide16,
@@ -79,7 +79,14 @@ import {
     },
     cellText: (el: any) => {
       // Show the value of the cell at the center of itself.
-      return [];
+      return [
+        {
+          text: `${el.toFixed(2)}`,
+          color: "#ccc",
+          anchor: Anchor.Center,
+          fontSize: 14,
+        },
+      ];
     },
     cellAtlasIndex: (el: any) => {
       // If you want to map a texture from an Atlas to your cell.
