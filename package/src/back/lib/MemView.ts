@@ -165,6 +165,7 @@ export default class MemView {
                 isBreakpoint: this.arrays[i].isBreakpoint,
                 waitFor: (this.arrays[i] as MemViewArray2dFlat).options.waitFor,
                 position: this.arrays[i].position,
+                zIndex: this.arrays[i].zIndex,
                 mapper: encodeMapper(this.arrays[i].options.mapper),
                 iteration: this.arrays[i].iteration,
               };
@@ -179,6 +180,7 @@ export default class MemView {
                 isBreakpoint: this.arrays[i].isBreakpoint,
                 waitFor: (this.arrays[i] as MemViewArray2d).options.waitFor,
                 position: this.arrays[i].position,
+                zIndex: this.arrays[i].zIndex,
                 mapper: encodeMapper(this.arrays[i].options.mapper),
                 iteration: this.arrays[i].iteration,
               };
@@ -193,6 +195,7 @@ export default class MemView {
                 isBreakpoint: this.arrays[i].isBreakpoint,
                 waitFor: (this.arrays[i] as MemViewArray1d).options.waitFor,
                 position: this.arrays[i].position,
+                zIndex: this.arrays[i].zIndex,
                 mapper: encodeMapper(this.arrays[i].options.mapper),
                 iteration: this.arrays[i].iteration,
               };
@@ -661,6 +664,7 @@ export default class MemView {
         this.arrays.push(arrayInstance);
         index = this.arrays.length - 1;
         this.setPositionIfDefined(index, finalOptions.position);
+        this.setZIndexIfDefined(index, finalOptions.zIndex);
       }
 
       this.arrays[index].setBreakpoint(finalOptions.isBreakpoint ?? false);
@@ -675,6 +679,7 @@ export default class MemView {
           isBreakpoint: this.arrays[index].isBreakpoint,
           waitFor: finalOptions.waitFor,
           position: this.arrays[index].position,
+          zIndex: this.arrays[index].zIndex,
           mapper: encodeMapper(finalOptions.mapper),
           iteration: this.arrays[index].iteration,
         };
@@ -791,6 +796,12 @@ export default class MemView {
         x: position.x || 0,
         y: position.y || 0,
       });
+    }
+  }
+
+  private setZIndexIfDefined(index: number, zIndex?: number) {
+    if (zIndex != undefined) {
+      this.arrays[index].setZIndex(zIndex || 0);
     }
   }
 

@@ -27,6 +27,11 @@ export abstract class MemViewArray {
     return this._position;
   }
 
+  protected _zIndex: number;
+  get zIndex(): number {
+    return this._zIndex;
+  }
+
   protected _lastUpdate: number;
   get lastUpdate(): number {
     return this._lastUpdate;
@@ -38,11 +43,16 @@ export abstract class MemViewArray {
     this._isBreakpoint = false;
     this._iteration = 1;
     this._position = { x: 0, y: 0 };
+    this._zIndex = 0;
     this._lastUpdate = Date.now();
   }
 
   setPosition(position: Vector2) {
     this._position = position;
+  }
+
+  setZIndex(zIndex: number) {
+    this._zIndex = zIndex;
   }
 
   setBreakpoint(isBreakpoint: boolean) {

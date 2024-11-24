@@ -24,6 +24,10 @@ export interface MemViewArrayLogOptions {
    */
   position: Vector2;
   /**
+   * Index of render (in case of superposition)
+   */
+  zIndex: number;
+  /**
    * Mouse output
    */
   output: MemViewMapperOutput;

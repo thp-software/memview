@@ -20,7 +20,7 @@ import {
     // No auto order
     autoOrder: "None",
     showSideBar: true,
-    showConsole: false,
+    showConsole: true,
     lockDrag: false,
     lockZoom: false,
     showCursor: true,
@@ -75,7 +75,7 @@ import {
   const customMapperTop: MemViewMapper = {
     cellBackgroundColor: (el: any) => {
       // If the value of cell is > 0.9, cell background will be red, else it will be green.
-      return el > 0.9 ? "#a0505050" : "#0000";
+      return el > 0.9 ? "#00ff00" : "#00cc00";
     },
     cellText: (el: any) => {
       // Show the value of the cell at the center of itself.
@@ -147,8 +147,64 @@ import {
         // Wait for the array to be rendered before continuing.
         isSync: true,
         mapper: customMapperTop,
-        output: customOutput,
+        output: {
+          onHover: (position: Vector2) => {
+            mem.log(`2 Mouse: ${position.x}/${position.y} -> Mouse Hovering`);
+          },
+          onMouseDown: (position: Vector2) => {
+            mem.log(`Mouse: ${position.x}/${position.y} -> Mouse Down`);
+          },
+          onMouseUp: (position: Vector2) => {
+            mem.log(`Mouse: ${position.x}/${position.y} -> Mouse Up`);
+          },
+        },
         position: { x: 0, y: 0 },
+        zIndex: 2,
+      }
+    );
+
+    await mem.log2d(
+      // Array unique id
+      "my_array_id_2a",
+      // Array reference
+      myArrayTop,
+      // Options
+      {
+        // Wait for 1000ms before continuing.
+        // Wait for the array to be rendered before continuing.
+        isSync: true,
+        mapper: {
+          cellBackgroundColor: (el: any) => {
+            // If the value of cell is > 0.9, cell background will be red, else it will be green.
+            return el > 0.9 ? "#ff5050" : "#ff0000";
+          },
+          cellText: (el: any) => {
+            // Show the value of the cell at the center of itself.
+            return [];
+          },
+          cellAtlasIndex: (el: any) => {
+            // If you want to map a texture from an Atlas to your cell.
+            // Not used here.
+            return { x: 0, y: 0 };
+          },
+          details: (el: any) => {
+            // Show the value of the hovered cell in the sidebar.
+            return [`Value: ${el.toFixed(2)}`];
+          },
+        },
+        output: {
+          onHover: (position: Vector2) => {
+            mem.log(`2a Mouse: ${position.x}/${position.y} -> Mouse Hovering`);
+          },
+          onMouseDown: (position: Vector2) => {
+            mem.log(`Mouse: ${position.x}/${position.y} -> Mouse Down`);
+          },
+          onMouseUp: (position: Vector2) => {
+            mem.log(`Mouse: ${position.x}/${position.y} -> Mouse Up`);
+          },
+        },
+        position: { x: 8, y: 0 },
+        zIndex: 1,
       }
     );
 
@@ -156,7 +212,7 @@ import {
       "dis",
       { x: 6, y: 4 },
       {
-        position: { x: 17 * 64, y: 0 },
+        position: { x: 17 * 64, y: -10 * 64 },
         backgroundColor: "#606060",
         elements: [
           {

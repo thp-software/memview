@@ -79,11 +79,15 @@ export abstract class MemViewDraw {
           zoomFactor
         );
 
-        infosContext.fillText(
-          text.text,
-          anchoredPosition.x,
-          anchoredPosition.y
-        );
+        if (anchoredPosition) {
+          infosContext.fillText(
+            text.text,
+            anchoredPosition.x,
+            anchoredPosition.y
+          );
+        } else {
+          console.warn(`Anchor is invalid`);
+        }
       });
     }
 

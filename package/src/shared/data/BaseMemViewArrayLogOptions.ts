@@ -7,6 +7,7 @@ export const getBaseMemViewArrayLogOptions = (): MemViewArrayLogOptions => {
     isBreakpoint: false,
     waitFor: 1,
     position: { x: 0, y: 0 },
+    zIndex: 0,
     output: {
       onHover: () => {},
       onMouseDown: () => {},

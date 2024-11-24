@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.6] - 2024-11-24
+
+### Changed
+
+- Array focus: fix position of the focus.
+
+### Added (minor changes)
+
+- Add zIndex to arrays for the rendering/interaction order.
+
 ## [0.5.5] - 2024-11-22
 
 ### Changed

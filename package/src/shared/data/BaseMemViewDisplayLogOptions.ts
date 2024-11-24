@@ -1,5 +1,4 @@
 import { MemViewDisplayLogOptions } from "../interfaces/MemViewDisplayLogOptions";
-import { DeepPartial } from "../types/DeepPartial";
 
 export const getBaseMemViewDisplayLogOptions = (): MemViewDisplayLogOptions => {
   return {

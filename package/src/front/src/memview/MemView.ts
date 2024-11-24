@@ -256,6 +256,7 @@ export class MemView {
           x: update.position.x * 64,
           y: update.position.y * 64,
         });
+        this.arrays[index].setZIndex(update.zIndex);
       } else if (update.type === MemViewArrayType.Array2d) {
         (this.arrays[index] as MemViewArray2d).setData(update.data);
         this.arrays[index].setBreakpoint(update.isBreakpoint);
@@ -264,6 +265,7 @@ export class MemView {
           x: update.position.x * 64,
           y: update.position.y * 64,
         });
+        this.arrays[index].setZIndex(update.zIndex);
       }
     } else {
       if (update.type === MemViewArrayType.Array2dFlat) {
@@ -291,6 +293,7 @@ export class MemView {
             x: update.position.x * 64,
             y: update.position.y * 64,
           });
+          this.arrays[index].setZIndex(update.zIndex);
         }
       } else if (update.type === MemViewArrayType.Array2d) {
         if (this.memViewRender) {
@@ -310,7 +313,10 @@ export class MemView {
           });
         }
       }
+      this.arrays[index].setZIndex(update.zIndex);
     }
+
+    this.arrays.sort((a, b) => a.zIndex - b.zIndex);
 
     this.eventEmitter.emit(
       "arrays_update",
@@ -763,7 +769,7 @@ export class MemView {
   }
 
   public getArrayUnderMouse() {
-    for (let i = 0; i < this.arrays.length; i++) {
+    for (let i = this.arrays.length - 1; i >= 0; i--) {
       const position: Vector2 = this.arrays[i].getPosition();
       let size: Vector2 = { x: 0, y: 0 };
 
@@ -813,8 +819,8 @@ export class MemView {
     if (index >= 0) {
       const position = this.arrays[index].getPosition();
       const size = {
-        x: this.arrays[index].getSize().x,
-        y: this.arrays[index].getSize().y,
+        x: this.arrays[index].getSize().x * 64,
+        y: this.arrays[index].getSize().y * 64,
       };
 
       this.focusPosition({
@@ -827,8 +833,8 @@ export class MemView {
 
   public focusPosition(position: Vector2) {
     this.offset = {
-      x: position.x * 64 - window.innerWidth / this.zooms[this.zoomIndex] / 2,
-      y: position.y * 64 - window.innerHeight / this.zooms[this.zoomIndex] / 2,
+      x: position.x - window.innerWidth / this.zooms[this.zoomIndex] / 2,
+      y: position.y - window.innerHeight / this.zooms[this.zoomIndex] / 2,
     };
     this.update();
   }

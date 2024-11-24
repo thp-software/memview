@@ -12,5 +12,6 @@ export interface ArrayUpdate {
   waitFor: number;
   iteration: number;
   position: Vector2;
+  zIndex: number;
   mapper: MemViewMapperSendable;
 }
