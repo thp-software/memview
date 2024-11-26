@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added (minor changes)
 
 - Add Button element to display.
+- Add id to display element.
 
 ## [0.5.6] - 2024-11-24
 
