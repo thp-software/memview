@@ -210,38 +210,53 @@ import {
 
     await mem.logDisplay(
       "dis",
-      { x: 6, y: 4 },
+      { x: 6, y: 5 },
       {
-        position: { x: 17 * 64, y: -10 * 64 },
+        position: { x: 25 * 64, y: 0 },
         backgroundColor: "#606060",
         elements: [
           {
+            id: "bg",
             type: "Div",
             backgroundColor: "#779",
             position: { x: 8, y: 30 },
             size: { x: 340, y: 20 },
           },
           {
+            id: "text",
             type: "Text",
             color: "#ddd",
             position: { x: 10, y: 10 },
             value: "This is a Display",
             fontSize: 36,
             alignement: "left",
+            size: { x: 20, y: 20 },
           },
           {
+            id: "text_iter",
             type: "Text",
             color: "#ddd",
             position: { x: 150, y: 80 },
             value: `iteration: ${i}`,
             fontSize: 26,
             alignement: "left",
+            size: { x: 20, y: 20 },
           },
           {
-            type: "Texture",
-            position: { x: 10, y: 80 },
-            textureIndex: { x: 1, y: 0 },
-            scale: 2,
+            id: "button",
+            type: "Button",
+            position: { x: 10, y: 120 },
+            size: { x: 250, y: 40 },
+            value: `Button`,
+            fontSize: 26,
+            alignement: "center",
+            color: "#eee",
+            backgroundColor: "#808080",
+            hoverBackgroundColor: "#707070",
+            pressBackgroundColor: "#505050",
+            onMouseDown: () => {
+              console.log("Button Clicked");
+            },
           },
         ],
       }

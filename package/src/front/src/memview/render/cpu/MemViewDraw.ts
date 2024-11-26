@@ -6,6 +6,7 @@ import { MemViewRenderOptions } from "../../../../../shared/interfaces/MemViewRe
 import { zooms } from "../../../../../shared/enums/Zoom";
 import {
   DisplayElement,
+  DisplayElementButton,
   DisplayElementDiv,
   DisplayElementText,
   DisplayElementTexture,
@@ -161,6 +162,51 @@ export abstract class MemViewDraw {
           Math.floor(position.y * zoomFactor + element.position.y * zoomFactor),
           Math.floor(64 * zoomFactor * element.scale),
           Math.floor(64 * zoomFactor * element.scale)
+        );
+      } else if (elements[i].type === "Button") {
+        const element = elements[i] as DisplayElementButton;
+
+        infosContext.fillStyle =
+          element.state === "Hovered"
+            ? element.hoverBackgroundColor
+            : element.state === "Pressed"
+            ? element.pressBackgroundColor
+            : element.backgroundColor;
+
+        // infosContext.fillStyle = element.backgroundColor;
+
+        infosContext.fillRect(
+          Math.floor(position.x * zoomFactor + element.position.x * zoomFactor),
+          Math.floor(position.y * zoomFactor + element.position.y * zoomFactor),
+          Math.floor(element.size.x * zoomFactor),
+          Math.floor(element.size.y * zoomFactor)
+        );
+
+        infosContext.strokeStyle = "#000000";
+        infosContext.lineWidth = 1 * zoomFactor;
+        infosContext.strokeRect(
+          Math.floor(position.x * zoomFactor + element.position.x * zoomFactor),
+          Math.floor(position.y * zoomFactor + element.position.y * zoomFactor),
+          Math.floor(element.size.x * zoomFactor),
+          Math.floor(element.size.y * zoomFactor)
+        );
+
+        infosContext.fillStyle = element.color;
+        infosContext.textAlign = element.alignement;
+        infosContext.textBaseline = "middle";
+        infosContext.font = `${element.fontSize * zoomFactor}px Consolas`;
+        infosContext.fillText(
+          element.value,
+          Math.floor(
+            position.x * zoomFactor +
+              element.position.x * zoomFactor +
+              (element.size.x / 2) * zoomFactor
+          ),
+          Math.floor(
+            position.y * zoomFactor +
+              element.position.y * zoomFactor +
+              (element.size.y / 2) * zoomFactor
+          )
         );
       }
     }

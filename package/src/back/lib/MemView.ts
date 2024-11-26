@@ -248,6 +248,38 @@ export default class MemView {
             }
           });
 
+          socket.on("display_hover", (data: any) => {
+            const index = this.displays.findIndex((el) => el.id === data.id);
+
+            if (index >= 0) {
+              const elementIndex = this.displays[index].elements.findIndex(
+                (el) => el.id === data.elementId
+              );
+              if (
+                elementIndex >= 0 &&
+                this.displays[index].elements[elementIndex].onMouseHover
+              ) {
+                this.displays[index].elements[elementIndex].onMouseHover();
+              }
+            }
+          });
+
+          socket.on("display_mouse_down", (data: any) => {
+            const index = this.displays.findIndex((el) => el.id === data.id);
+
+            if (index >= 0) {
+              const elementIndex = this.displays[index].elements.findIndex(
+                (el) => el.id === data.elementId
+              );
+              if (
+                elementIndex >= 0 &&
+                this.displays[index].elements[elementIndex].onMouseDown
+              ) {
+                this.displays[index].elements[elementIndex].onMouseDown();
+              }
+            }
+          });
+
           socket.on("resume_breakpoint", (data: any) => {
             const index = this.arrays.findIndex((el) => el.id === data.id);
             if (index >= 0) {

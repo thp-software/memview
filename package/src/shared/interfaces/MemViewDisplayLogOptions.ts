@@ -24,16 +24,25 @@ export interface MemViewDisplayLogOptions {
   /**
    * Elements to display
    */
-  elements: (DisplayElementDiv | DisplayElementText | DisplayElementTexture)[];
+  elements: (
+    | DisplayElementDiv
+    | DisplayElementText
+    | DisplayElementTexture
+    | DisplayElementButton
+  )[];
 }
 
 export interface DisplayElement {
-  type: "Div" | "Text" | "Texture";
+  id: string;
+  type: "Div" | "Text" | "Texture" | "Button";
   position: Vector2;
+  size: Vector2;
+  onMouseHover?: () => void;
+  onMouseDown?: () => void;
+  [key: string]: any;
 }
 
 export interface DisplayElementText extends DisplayElement {
-  position: Vector2;
   fontSize: number;
   color: string;
   alignement: CanvasTextAlign;
@@ -41,11 +50,20 @@ export interface DisplayElementText extends DisplayElement {
 }
 
 export interface DisplayElementDiv extends DisplayElement {
-  size: Vector2;
   backgroundColor: string;
 }
 
 export interface DisplayElementTexture extends DisplayElement {
   textureIndex: Vector2;
   scale: number;
+}
+
+export interface DisplayElementButton extends DisplayElement {
+  backgroundColor: string;
+  hoverBackgroundColor: string;
+  pressBackgroundColor: string;
+  fontSize: number;
+  color: string;
+  value: string;
+  alignement: CanvasTextAlign;
 }

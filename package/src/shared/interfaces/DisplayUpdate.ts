@@ -1,4 +1,5 @@
 import {
+  DisplayElementButton,
   DisplayElementDiv,
   DisplayElementText,
   DisplayElementTexture,
@@ -13,5 +14,10 @@ export interface DisplayUpdate {
   isBreakpoint: boolean;
   waitFor: number;
   position: Vector2;
-  elements: (DisplayElementDiv | DisplayElementText | DisplayElementTexture)[];
+  elements: (
+    | DisplayElementDiv
+    | DisplayElementText
+    | DisplayElementTexture
+    | DisplayElementButton
+  )[];
 }

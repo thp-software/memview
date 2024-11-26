@@ -16,6 +16,10 @@ import { zooms } from "../../../shared/enums/Zoom";
 import { ViewData } from "../../../shared/interfaces/ViewData";
 import { AudioManager } from "../../../shared/Utils/AudioManager";
 import { AudioPlayer } from "./utils/AudioPlayer";
+import {
+  DisplayElement,
+  DisplayElementButton,
+} from "../../../shared/interfaces/MemViewDisplayLogOptions";
 
 export class MemView {
   private container: HTMLDivElement;
@@ -31,11 +35,15 @@ export class MemView {
   private offset: Vector2 = { x: 0, y: 0 };
   private startDrag: Vector2 = { x: 0, y: 0 };
   private mouseLocal: Vector2 = { x: 0, y: 0 };
+  private mouseWorld: Vector2 = { x: 0, y: 0 };
   private cellPosition: Vector2 = { x: 0, y: 0 };
   private isDragging: boolean = false;
 
   private hoveredArray: MemViewArrayFront | null = null;
   private hoveredArrayCell: Vector2 = { x: 0, y: 0 };
+
+  private hoveredDisplay: DisplayUpdate | null = null;
+  private hoveredDisplayElement: DisplayElement | null = null;
 
   private zooms: number[] = zooms;
 
@@ -60,6 +68,8 @@ export class MemView {
   }
 
   pressedKeys: Map<KeyCode, boolean> = new Map<KeyCode, boolean>();
+
+  private isMouseDown: boolean = false;
 
   private viewData: ViewData | undefined = undefined;
 
@@ -417,6 +427,10 @@ export class MemView {
         this.reOrderArrays();
       }
 
+      this.getArrayUnderMouse();
+
+      this.getDisplayUnderMouse();
+
       for (let i = 0; i < this.arrays.length; i++) {
         const start: number = performance.now();
         this.arrays[i].updateRender(
@@ -442,8 +456,6 @@ export class MemView {
         );
         // this.arrays[i].setLastRenderTime(performance.now() - start);
       }
-
-      this.getArrayUnderMouse();
     }
   }
 
@@ -497,12 +509,25 @@ export class MemView {
       ),
     };
 
+    this.mouseWorld = {
+      x: this.offset.x + this.mouseLocal.x / this.zooms[this.zoomIndex],
+      y: this.offset.y + this.mouseLocal.y / this.zooms[this.zoomIndex],
+    };
+
     this.getArrayUnderMouse();
+    this.getDisplayUnderMouse();
 
     if (this.hoveredArray !== null) {
       this.socket?.emit("array_hover", {
         id: this.hoveredArray.getId(),
         position: this.hoveredArrayCell,
+      });
+    }
+
+    if (this.hoveredDisplay !== null && this.hoveredDisplayElement) {
+      this.socket?.emit("display_hover", {
+        id: this.hoveredDisplay.id,
+        elementId: this.hoveredDisplayElement.id,
       });
     }
 
@@ -531,10 +556,21 @@ export class MemView {
    */
   private onMouseDown(event: MouseEvent) {
     if (event.button === 0) {
+      this.isMouseDown = true;
       if (this.hoveredArray !== null) {
         this.socket?.emit("array_mouse_down", {
           id: this.hoveredArray.getId(),
           position: this.hoveredArrayCell,
+        });
+      }
+      if (this.hoveredDisplay !== null && this.hoveredDisplayElement) {
+        // if (this.hoveredDisplayElement.type === "Button") {
+        //   (this.hoveredDisplayElement as DisplayElementButton).state =
+        //     "Pressed";
+        // }
+        this.socket?.emit("display_mouse_down", {
+          id: this.hoveredDisplay.id,
+          elementId: this.hoveredDisplayElement.id,
         });
       }
     } else if (event.button === 2) {
@@ -556,6 +592,7 @@ export class MemView {
    */
   private onMouseUp(event: MouseEvent) {
     if (event.button === 0) {
+      this.isMouseDown = false;
       if (this.hoveredArray !== null) {
         this.socket?.emit("array_mouse_up", {
           id: this.hoveredArray.getId(),
@@ -791,6 +828,67 @@ export class MemView {
     }
 
     this.hoveredArray = null;
+  }
+
+  public getDisplayUnderMouse() {
+    this.hoveredDisplay = null;
+    this.hoveredDisplayElement = null;
+
+    for (let i = this.displays.length - 1; i >= 0; i--) {
+      const position: Vector2 = this.displays[i].position;
+      const size: Vector2 = {
+        x: this.displays[i].size.x * 64,
+        y: this.displays[i].size.y * 64,
+      };
+
+      if (
+        this.mouseWorld.x >= position.x &&
+        this.mouseWorld.y >= position.y &&
+        this.mouseWorld.x < position.x + size.x &&
+        this.mouseWorld.y < position.y + size.y
+      ) {
+        this.hoveredDisplay = this.displays[i];
+
+        for (let j = 0; j < this.displays[i].elements.length; j++) {
+          const elementPosition: Vector2 = {
+            x:
+              this.displays[i].position.x +
+              this.displays[i].elements[j].position.x,
+            y:
+              this.displays[i].position.y +
+              this.displays[i].elements[j].position.y,
+          };
+
+          const elementSize: Vector2 = {
+            x: this.displays[i].elements[j].size.x,
+            y: this.displays[i].elements[j].size.y,
+          };
+
+          if (
+            this.mouseWorld.x >= elementPosition.x &&
+            this.mouseWorld.y >= elementPosition.y &&
+            this.mouseWorld.x < elementPosition.x + elementSize.x &&
+            this.mouseWorld.y < elementPosition.y + elementSize.y
+          ) {
+            this.hoveredDisplayElement = this.displays[i].elements[j];
+            if (this.displays[i].elements[j].type === "Button") {
+              if (this.isMouseDown) {
+                (this.displays[i].elements[j] as DisplayElementButton).state =
+                  "Pressed";
+              } else {
+                (this.displays[i].elements[j] as DisplayElementButton).state =
+                  "Hovered";
+              }
+            }
+            return;
+          }
+        }
+
+        return;
+      }
+    }
+
+    this.hoveredDisplay = null;
   }
 
   public on(event: string, listener: (...args: any[]) => void) {
