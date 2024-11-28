@@ -58,8 +58,8 @@ export const decodeMapper = (mapper: MemViewMapperSendable): MemViewMapper => {
 const replaceAnchorsDynamically = (input: string): string => {
   const regex = /(import_memview\w*|memview_\d*)\.Anchor\.(\w+)(,|})/g;
 
-  return input.replace(regex, (_, p1) => {
-    const replacement = `${Anchor[p1]},`;
+  return input.replace(regex, (_, _p1, p2, p3) => {
+    const replacement = `${Anchor[p2]}${p3}`;
     return replacement;
   });
 };
