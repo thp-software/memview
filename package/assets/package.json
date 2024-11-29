@@ -2,7 +2,7 @@
   "name": "memview",
   "description": "A web interface for Node.js that allows quick debugging and visualization of arrays.",
   "license": "MIT",
-  "version": "0.5.9",
+  "version": "0.5.10",
   "main": "index.cjs.js",
   "module": "index.esm.js",
   "types": "back/index.d.ts",

@@ -45,7 +45,7 @@ export abstract class MemViewDraw {
 
     if (zoomFactor >= zooms[renderOptions.textureDisplayThreshold]) {
       if (
-        !(element.cellAtlasIndex.x === 0 && element.cellAtlasIndex.x === 0) &&
+        !(element.cellAtlasIndex.x === 0 && element.cellAtlasIndex.y === 0) &&
         atlasImage &&
         atlasTextureSize
       ) {
