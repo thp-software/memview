@@ -58,6 +58,10 @@ You can receive inputs:
 
 [A small snake game using MemView for render](https://github.com/thp-software/memview-snake)
 
+### MemView Pathfinding
+
+[Execute pathfinding on a map with full details](https://github.com/thp-software/memview-pathfinding)
+
 ## Installation
 
 `npm i memview`
